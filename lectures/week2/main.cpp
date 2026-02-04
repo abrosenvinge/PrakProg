@@ -8,25 +8,22 @@ template <typename T> void print_vec(std::vector<T> v) {
 }
 
 int main () {
-	std::vector<double> v = {1,2,3};
+	// std::vector<double> v = {1,2,3};
+	//
+	// auto &u = v;
+	//
+	// print_vec(u);
+	// print_vec(v);
+	//
+	// // nothing happens (ui copied)
+	// for (auto ui : u) ui = 6;
+	// print_vec(u);
+	//
+	// // changed (vi referenced)
+	// for (auto &vi : v) vi = 6;
+	// print_vec(v);
 
-	auto &u = v;
-
-	print_vec(u);
-	print_vec(v);
-
-	// nothing happens (ui copied)
-	for (auto ui : u) ui = 6;
-	print_vec(u);
-
-	// changed (vi referenced)
-	for (auto &vi : v) vi = 6;
-	print_vec(v);
-
-	pp::vec3 a;
-	a.x = 10.0;
-	a.y = 6.0;
-	a.z = 3.0;
+	pp::vec3 a(4,5,6);
 
 	std::cout << a.x << " " << a.y << " " << a.z << std::endl;
 

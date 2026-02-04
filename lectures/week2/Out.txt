@@ -2,4 +2,6 @@
 1 2 3 
 1 2 3 
 6 6 6 
-10 6 3
+Parm ctor called
+4 5 6
+destructor called
