@@ -1,0 +1,20 @@
+Opg.1
+                     Computed                          std::numeric_limits               Power of 2
+float epsilon:       0.000000119209289550781250000000, 0.000000119209289550781250000000, 0.000000119209289550781250000000
+double epsilon:      0.000000000000000222044604925031, 0.000000000000000222044604925031, 0.000000000000000222044604925031
+long double epsilon: 0.000000000000000000108420217249, 0.000000000000000000108420217249
+The computed ones are the same as the ones in std::numeric_limits
+
+Opg. 2
+a = 1. + tiny + tiny = 1.00000000000000000
+b = tiny + tiny + 1. = 1.00000000000000022
+a == b: false
+a < b: true
+a > b: false
+This is due to precision being better at numbers close to 0,
+so (tiny + tiny) + 1. = epsilon + 1. != 1. (by definition.)
+However (1. + tiny) + tiny = 1. + tiny = 1.
+
+Opg. 3
+d1==d2?: false
+approx(d1,d2): true
