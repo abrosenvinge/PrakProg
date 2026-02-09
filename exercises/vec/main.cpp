@@ -23,4 +23,7 @@ int main() {
 
 	std::cout << v.norm() << "\n";
 	std::cout << u*v << "\n";
+
+	vec::vec cross_test = vec::cross(vec::vec(1,0,0), vec::vec(0,1,0));
+	std::cout << cross_test << "\n";
 }

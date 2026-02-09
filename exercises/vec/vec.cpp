@@ -73,7 +73,11 @@ namespace vec {
 	}
 
 	vec cross(const vec& u, const vec& v) {
-		// TODO
+		return vec(
+			u.y*v.z - u.z*v.y,
+			u.z*v.x - u.x*v.z,
+			u.x*v.y - u.y*v.x
+		);
 	}
 
 	std::ostream& operator<<(std::ostream& s, const vec& u) {
