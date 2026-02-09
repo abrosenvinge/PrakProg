@@ -1,6 +1,7 @@
 #include "vec.hpp"
 #include <cmath>
 #include <ostream>
+#include "../epsilon/approx.hpp"
 
 namespace vec {
 	vec& vec::operator +=(const vec& u) {
@@ -78,6 +79,12 @@ namespace vec {
 			u.z*v.x - u.x*v.z,
 			u.x*v.y - u.y*v.x
 		);
+	}
+
+	bool approx(const vec& u, const vec& v) {
+		return approx::approx(u.x,v.x)
+				&& approx::approx(u.y,v.y)
+				&& approx::approx(u.z,v.z);
 	}
 
 	std::ostream& operator<<(std::ostream& s, const vec& u) {

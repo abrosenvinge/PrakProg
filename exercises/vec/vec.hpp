@@ -37,4 +37,6 @@ namespace vec {
 
 	double dot(const vec&, const vec&); // dot product
 	vec cross(const vec&, const vec&);
+
+	bool approx(const vec&, const vec&);
 }
