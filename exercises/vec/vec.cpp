@@ -42,7 +42,7 @@ namespace vec {
 	// 	return out;
 	// }
 	
-	// difference is wether u is passed by reference or copied when operator
+	// difference is whether u is passed by reference or copied when operator
 	// is called. Apparently below version is better for case like a+b+c
 	vec operator+(vec u, const vec& v) {
 		u += v;
@@ -64,12 +64,12 @@ namespace vec {
 		return u;
 	}
 
-	double operator*(const vec& u, const vec& v) {
+	double dot(const vec& u, const vec& v) {
 		return u.x * v.x + u.y * v.y + u.z * v.z;
 	}
 
 	double vec::norm() {
-		return std::sqrt(*this * *this);
+		return std::sqrt(dot(*this, *this));
 	}
 
 	vec cross(const vec& u, const vec& v) {
