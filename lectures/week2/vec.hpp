@@ -14,7 +14,7 @@ namespace pp {
 		vec3() : vec3(0,0,0) {
 			std::cout << "default constructor called\n";
 		}
-		vec3(const vec3&) = default; //cope ctor: vec a = b
+		vec3(const vec3&) = default; //copy ctor: vec a = b
 		vec3(vec3&&) = default; //move ctor: vec a = b + c
 
 		//dtor
