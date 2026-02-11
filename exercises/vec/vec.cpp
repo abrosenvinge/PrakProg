@@ -44,7 +44,7 @@ namespace vec {
 	// }
 	
 	// difference is whether u is passed by reference or copied when operator
-	// is called. Apparently below version is better for case like a+b+c
+	// is called. Apparently below version is better for cases like a+b+c
 	vec operator+(vec u, const vec& v) {
 		u += v;
 		return u;
@@ -91,5 +91,4 @@ namespace vec {
 		s << u.x << " " << u.y << " " << u.z;
 		return s;
 	}
-
 }
