@@ -29,6 +29,6 @@ int main() {
 	std::cout << "cross(u,v) = " << cross_test << "\n";
 
 	std::cout << std::format("u == v: {}\n", vec::approx(u,v)); //should be false
-	std::cout << std::format("u == u + (1e-9, 1e-9, 1e-9): {}", 
+	std::cout << std::format("approx(u,u + (1e-9, 1e-9, 1e-9)): {}", 
 			vec::approx(u, u + vec::vec(1e-9, 1e-9, 1e-9)));
 }
