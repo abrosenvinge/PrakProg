@@ -2,7 +2,7 @@ CXX = clang++
 CXXFLAGS = -std=c++23 -O -Wall -Wextra
 LDLIBS += -lstdc++ -lm
 
-objects = main.o vec.o ../epsilon/approx.o
+objects = main.o vec.o approx.o
 
 all : Out.txt
 	cat Out.txt
@@ -16,7 +16,8 @@ main.o: main.cpp vec.hpp
 
 vec.o: vec.cpp vec.hpp ../epsilon/approx.hpp
 
-../epsilon/approx.o: ../epsilon/approx.hpp
+approx.o: ../epsilon/approx.cpp ../epsilon/approx.hpp
+	$(CXX) $(CXXFLAGS) -o $@ -c $<
 
 clean:
 	$(RM) main Out.txt $(objects)
