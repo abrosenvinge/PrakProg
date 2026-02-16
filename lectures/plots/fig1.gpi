@@ -1,0 +1,9 @@
+set terminal svg
+set output filename
+
+set xlabel "x"
+set ylabel "y"
+set key out
+set tics out
+
+plot [-3:3] erf(x)
