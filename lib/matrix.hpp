@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <ostream>
 #include <vector>
+#include "math.hpp"
 
 namespace pp {
 	constexpr size_t DYNAMIC = 0;
@@ -165,6 +166,14 @@ namespace pp {
 	template <typename T, size_t AROWS, size_t ACOLS, size_t BCOLS>
 	inline Matrix<T, AROWS, BCOLS> operator*(const MatrixBase<T, AROWS, ACOLS>& a, const MatrixBase<T, ACOLS, BCOLS>& b) {
 		return mat_mult(a,b);
+	}
+
+	template <typename T, size_t ROWS, size_t COLS>
+	bool approx(const MatrixBase<T,ROWS,COLS>& a, const MatrixBase<T,ROWS,COLS> b) {
+		bool result = true;
+		for (size_t j = 0; (j < a.n_cols) && result; ++j) {
+			for (size_t i = 0; (i < a.n_rows) && result; ++i) result &= approx(a[i,j], b[i,j]);
+		}
 	}
 
 	template <typename T, size_t ROWS, size_t COLS>
