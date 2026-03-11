@@ -2,3 +2,4 @@
 *.exe
 *.o
 main
+lib/matrix_templated.hpp
