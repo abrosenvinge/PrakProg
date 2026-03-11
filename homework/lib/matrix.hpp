@@ -35,6 +35,15 @@ namespace pp {
 			return TransposeView<S>(*this);
 		}
 
+		bool is_utriangular() {
+			bool result = n_rows == n_cols; // should be square
+			for (size_t j = 0; (j < n_cols) && result; ++j) {
+				for (size_t i = j + 1; (i < n_rows) && result; ++i) {
+					result &= approx((*this)[i,j], 0.);
+				}
+			}
+		}
+
 		Matrix<S> T_copy() {
 			Matrix<S> out(n_cols, n_rows);
 			for (size_t j = 0; j < n_cols; ++j) {
