@@ -58,4 +58,15 @@ int main() {
 	// std::cout << "A*b =\n" << A*b << "\n\n";
 	std::cout << "dot(a,b) = " << dot(a,b) << "\n\n";
 	std::cout << "norm(a) = " << norm(a) << "\n\n";
+
+
+	pp::TransposeView<double> AT = A.T();
+	std::cout << "A.T() =\n" << AT << "\n\n";
+	std::cout << "A.T() * B\n" << AT * B << "\n\n";
+
+	std::cout << "aprox((B.T() * A.T()).T(), A*B) = " << approx((B.T() * A.T()).T(), A*B) << "\n\n";
+
+	A.T() = B;
+	std::cout << "A.T() = B; A = \n" << A << "\n\n";
+	std::cout << "approx(A, B.T()) = " << approx(A, B.T()) << "\n\n";
 }
