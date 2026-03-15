@@ -3,3 +3,4 @@
 *.o
 main
 homework/lib/matrix_templated.hpp
+.vscode
