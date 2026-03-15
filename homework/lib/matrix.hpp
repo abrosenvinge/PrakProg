@@ -2,12 +2,14 @@
 #include <cmath>
 #include <complex>
 #include <cstddef>
+#include <iostream>
 #include <ostream>
 #include <stdexcept>
 #include <vector>
 #include <random>
 
 namespace pp {
+	template <typename S> class VectorBase;
 	template <typename S> class Vector;
 	template <typename S> class ColumnView;
 	template <typename S> class TransposeView;
@@ -19,6 +21,9 @@ namespace pp {
 
 	template <typename S>
 	bool mat_approx(const MatrixBase<S>& a, const MatrixBase<S>& b, double acc = 1e-9, double eps = 1e-9);
+	
+	template <typename S>
+	bool vec_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc = 1e-9, double eps = 1e-9);
 
 	template <typename S>
 	class MatrixBase {
@@ -236,6 +241,7 @@ namespace pp {
 
 	template <typename S>
 	Matrix<S> mat_mult(const MatrixBase<S>& a, const MatrixBase<S>& b) {
+		if (a.n_cols != b.n_rows) throw std::out_of_range("Dimensions not compatible");
 		size_t n_rows = a.n_rows;
 		size_t n_cols = b.n_cols;
 		size_t kmax = a.n_cols;
@@ -270,11 +276,41 @@ namespace pp {
 	}
 
 	template <typename S>
-	class VectorBase : public MatrixBase<S> {
+	class VectorBase{
 	public:
-		using MatrixBase<S>::operator[];
 		virtual S& operator[](size_t) = 0;
 		virtual const S& operator[](size_t) const = 0;
+		size_t size;
+
+		VectorBase& operator+=(const VectorBase& other) {
+			if (size != other.size) throw std::out_of_range("Dimensions not compatible");
+			for (size_t i = 0; i < size; ++i) {
+				(*this)[i] += other[i];
+			}
+			return *this;
+		}
+
+		VectorBase& operator-=(const VectorBase& other) {
+			if (size != other.size) throw std::out_of_range("Dimensions not compatible");
+			for (size_t i = 0; i < size; ++i) {
+				(*this)[i] -= other[i];
+			}
+			return *this;
+		}
+
+		VectorBase& operator*=(const S& a) {
+			for (size_t i = 0; i < size; ++i) {
+				(*this)[i] *= a;
+			}
+			return *this;
+		}
+		
+		VectorBase& operator/=(const S& a) {
+			for (size_t i = 0; i < size; ++i) {
+				(*this)[i] /= a;
+			}
+			return *this;
+		}
 	};
 
 	template <typename S>
@@ -282,18 +318,14 @@ namespace pp {
 	private:
 		std::vector<S> data;
 	public:
-		using MatrixBase<S>::n_rows, 
-			  MatrixBase<S>::n_cols, 
-			  MatrixBase<S>::size;
+		using VectorBase<S>::size;
 
-		Vector(size_t n_rows) :
-			data(n_rows) {
-			this->n_rows = n_rows;
-			this->n_cols = 1;
-			this->size = n_rows;
+		Vector(size_t size) :
+			data(size) {
+			this->size = size;
 		}
 
-		Vector(const VectorBase<S>& other) : Vector(other.n_rows) {
+		Vector(const VectorBase<S>& other) : Vector(other.size) {
 			for(size_t i = 0; i < size; ++i) (*this)[i] = other[i];
 		}
 
@@ -304,15 +336,6 @@ namespace pp {
 		const S& operator[](size_t i) const override {
 			return data[i];
 		}
-
-		// column-major indexing
-		S& operator[](size_t i, size_t j) override {
-			return data[n_rows * j + i];
-		}
-
-		const S& operator[](size_t i, size_t j) const override {
-			return data[n_rows * j + i];
-		}
 	};
 
 	template <typename S>
@@ -321,15 +344,12 @@ namespace pp {
 		MatrixBase<S>& parent;
 		size_t col;
 	public:
-		using MatrixBase<S>::n_rows, MatrixBase<S>::n_cols, MatrixBase<S>::size;
-
+		using VectorBase<S>::size;
 		ColumnView(MatrixBase<S>& parent, size_t col) : 
 			parent(parent),
 			col(col) 
 		{
-			n_rows = parent.n_rows;
-			n_cols = 1;
-			size = n_cols * n_rows;
+			size = parent.n_rows;
 		}
 		/*
 		* These assignments are made like this to support operations like A.col(0) = B.col(1) etc.
@@ -356,13 +376,6 @@ namespace pp {
 			return parent[i,col];
 		}
 		const S& operator[](size_t i) const override {
-			return parent[i,col];
-		}
-
-		S& operator[](size_t i, size_t) override {
-			return parent[i,col];
-		}
-		const S& operator[](size_t i, size_t) const override {
 			return parent[i,col];
 		}
 	};
@@ -412,6 +425,23 @@ namespace pp {
 		return out;
 	}
 
+	template <typename S>
+	Vector<S> mat_mult(const MatrixBase<S>& a, const VectorBase<S>& b) {
+		if (a.n_cols != b.size) throw std::out_of_range("Dimensions not compatible");
+		Vector<S> out(a.n_rows);
+		for (size_t i = 0; i < a.n_rows; ++i) {
+			for (size_t j = 0; j < a.n_cols; ++j) {
+				out[i] += a[i,j] * b[j];
+			}
+		}
+		return out;
+	}
+
+	template <typename S>
+	inline Vector<S> operator*(const MatrixBase<S>& a, const VectorBase<S>& b) {
+		return mat_mult(a,b);
+	}
+
 	// template <typename S>
 	// std::complex<S> dot(const VectorBase<std::complex<S>>& a, const VectorBase<std::complex<S>>& b) {
 	// 	if (a.size != b.size) throw std::out_of_range("Dimensions not compatible");
@@ -421,6 +451,15 @@ namespace pp {
 	// 	}
 	// 	return out;
 	// }
+
+	template <typename S>
+	std::ostream& operator<<(std::ostream& s, const VectorBase<S>& v) {
+		for (size_t i = 0; i < v.size; ++i) {
+			s << v[i];
+			if (i < v.size - 1) s << "\n";
+		}
+		return s;
+	}
 
 	template <typename S>
 	S norm(const VectorBase<S>& a) {
@@ -443,6 +482,12 @@ namespace pp {
 		void fill(MatrixBase<double>& mat) {
 			for (size_t j = 0; j < mat.n_cols; ++j) {
 				for (size_t i = 0; i < mat.n_rows; ++i) mat[i,j] = random(re);
+			}
+		}
+		
+		void fill(VectorBase<double>& v) {
+			for (size_t i = 0; i < v.size; ++i) {
+				v[i] = random(re);
 			}
 		}
 
@@ -472,6 +517,16 @@ namespace pp {
 		for (size_t j = 0; (j < a.n_cols) && result; ++j) {
 			for (size_t i = 0; (i < a.n_rows) && result; ++i) 
 				result &= approx(a[i,j], b[i,j], acc, eps);
+		}
+		return result;
+	}
+
+	template <typename S>
+	bool vec_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc, double eps) {
+		if (a.size != b.size) throw std::out_of_range("Dimensions not compatible");
+		bool result = true;
+		for (size_t i = 0; i < a.size; ++i) {
+			result &= approx(a[i], b[i]);
 		}
 		return result;
 	}
