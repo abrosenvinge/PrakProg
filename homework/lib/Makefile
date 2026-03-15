@@ -1,8 +1,8 @@
 CXX = g++
-CXXFLAGS = -std=c++23 -O -Wall -Wextra
+CXXFLAGS = -std=c++23 -Wall -Wextra -g
 LDLIBS += -lstdc++ -lm
 
-test: matrix.hpp vector.hpp
+test: matrix.hpp
 
 clean:
-	$(RM) main
+	$(RM) test

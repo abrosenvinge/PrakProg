@@ -1,4 +1,5 @@
 #include "matrix.hpp"
+#include "utils.hpp"
 #include <iostream>
 
 int main() {
@@ -40,11 +41,14 @@ int main() {
 		v[i] = i*i + 5;
 	}
 
+
 	std::cout << "u =\n" << u << "\n\n";
 	std::cout << "v =\n" << v << "\n\n";
 	std::cout << "A*u =\n" << A*u << "\n\n";
 	std::cout << "dot(u,v) = " << dot(u,v) << "\n\n";
 	std::cout << "norm(u) = " << norm(u) << "\n\n";
+	u = u + v;
+	std::cout << "u = u + v; u =\n" << u << "\n\n";
 
 	// complex vector
 	pp::VectorC<double> a(5), b(5);
@@ -64,9 +68,24 @@ int main() {
 	std::cout << "A.T() =\n" << AT << "\n\n";
 	std::cout << "A.T() * B\n" << AT * B << "\n\n";
 
-	std::cout << "aprox((B.T() * A.T()).T(), A*B) = " << approx((B.T() * A.T()).T(), A*B) << "\n\n";
+	std::cout << "mat_approx((B.T() * A.T()).T(), A*B) = " << mat_approx((B.T() * A.T()).T(), A*B) << "\n\n";
 
 	A.T() = B;
 	std::cout << "A.T() = B; A = \n" << A << "\n\n";
-	std::cout << "approx(A, B.T()) = " << approx(A, B.T()) << "\n\n";
+	std::cout << "mat_approx(A, B.T()) = " << mat_approx(A, B.T()) << "\n\n";
+
+	pp::Matrix<double> I5 = pp::Matrix<double>::ident(5);
+	std::cout << "I5 =\n" << I5 << "\n\n";
+
+	std::cout << A.is_utriangular() << "\n\n";
+
+	pp::Matrix<double> D(7,5);
+	std::cout << D.n_cols << "\n";
+	std::cout << D.n_rows << "\n";
+	for (size_t j = 0; j < D.n_cols; ++j) 
+		for (size_t i = 0; i < D.n_rows; ++i) D[i,j] = i + j;
+
+	std::cout << "D =\n" << D << "\n\n";
+	D.col(0) -= D.col(1);
+	std::cout << "D.col(0) -= D.col(1); D =\n" << D << "\n\n";
 }
