@@ -23,7 +23,7 @@ namespace pp {
 	bool mat_approx(const MatrixBase<S>& a, const MatrixBase<S>& b, double acc = 1e-9, double eps = 1e-9);
 	
 	template <typename S>
-	bool vec_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc = 1e-9, double eps = 1e-9);
+	bool mat_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc = 1e-9, double eps = 1e-9);
 
 	template <typename S>
 	class MatrixBase {
@@ -65,6 +65,7 @@ namespace pp {
 					out[j,i] = (*this)[i,j];
 				}
 			}
+			return out;
 		}
 
 		MatrixBase& operator+=(const MatrixBase& other) {
@@ -522,7 +523,7 @@ namespace pp {
 	}
 
 	template <typename S>
-	bool vec_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc, double eps) {
+	bool mat_approx(const VectorBase<S>& a, const VectorBase<S>& b, double acc, double eps) {
 		if (a.size != b.size) throw std::out_of_range("Dimensions not compatible");
 		bool result = true;
 		for (size_t i = 0; i < a.size; ++i) {
