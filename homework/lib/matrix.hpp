@@ -58,6 +58,10 @@ namespace pp {
 			return result;
 		}
 
+		bool is_square() {
+			return n_rows == n_cols;
+		}
+
 		Matrix<S> T_copy() {
 			Matrix<S> out(n_cols, n_rows);
 			for (size_t j = 0; j < n_cols; ++j) {
@@ -443,16 +447,6 @@ namespace pp {
 		return mat_mult(a,b);
 	}
 
-	// template <typename S>
-	// std::complex<S> dot(const VectorBase<std::complex<S>>& a, const VectorBase<std::complex<S>>& b) {
-	// 	if (a.size != b.size) throw std::out_of_range("Dimensions not compatible");
-	// 	std::complex<S> out(0.);
-	// 	for (size_t i = 0; i < a.size; ++i) {
-	// 		out += std::conj(a[i]) * b[i];
-	// 	}
-	// 	return out;
-	// }
-
 	template <typename S>
 	std::ostream& operator<<(std::ostream& s, const VectorBase<S>& v) {
 		for (size_t i = 0; i < v.size; ++i) {
@@ -485,6 +479,18 @@ namespace pp {
 				for (size_t i = 0; i < mat.n_rows; ++i) mat[i,j] = random(re);
 			}
 		}
+
+		void fill_symmetric(MatrixBase<double>& mat) {
+			if (!mat.is_square()) throw std::invalid_argument("Non-square matrix cannot be made symmetric");
+			for (size_t j = 0; j < mat.n_rows; ++j) {
+				for (size_t i = 0; i < j; ++i) {
+					double a = random(re);
+					mat[i,j] = a;
+					mat[j,i] = a;
+				}
+				mat[j,j] = random(re);
+			}
+		}
 		
 		void fill(VectorBase<double>& v) {
 			for (size_t i = 0; i < v.size; ++i) {
@@ -501,6 +507,12 @@ namespace pp {
 		Matrix<double> create(size_t rows, size_t cols) {
 			Matrix<double> out(rows, cols);
 			fill(out);
+			return out;
+		}
+
+		Matrix<double> create_symmetric(size_t n) {
+			Matrix<double> out(n,n);
+			fill_symmetric(out);
 			return out;
 		}
 	};
@@ -527,7 +539,7 @@ namespace pp {
 		if (a.size != b.size) throw std::out_of_range("Dimensions not compatible");
 		bool result = true;
 		for (size_t i = 0; i < a.size; ++i) {
-			result &= approx(a[i], b[i]);
+			result &= approx(a[i], b[i], acc, eps);
 		}
 		return result;
 	}
