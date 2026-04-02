@@ -48,7 +48,7 @@ namespace pp {
 			return TransposeView<S>(*this);
 		}
 
-		bool is_utriangular() {
+		bool is_utriangular() const {
 			bool result = n_rows == n_cols; // should be square
 			for (size_t j = 0; (j < n_cols) && result; ++j) {
 				for (size_t i = j + 1; (i < n_rows) && result; ++i) {
@@ -58,7 +58,7 @@ namespace pp {
 			return result;
 		}
 
-		bool is_square() {
+		bool is_square() const {
 			return n_rows == n_cols;
 		}
 
