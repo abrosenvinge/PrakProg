@@ -341,6 +341,10 @@ namespace pp {
 		const S& operator[](size_t i) const override {
 			return data[i];
 		}
+
+		void push_back(S a) {
+			size++; data.push_back(a);
+		}
 	};
 
 	template <typename S>
