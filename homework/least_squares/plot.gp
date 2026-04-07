@@ -8,7 +8,7 @@ fminus(t) = (a - da) * exp(-(lambda - dlambda) * t)
 set xlabel "t [days]"
 set ylabel "Activity of ThX [rel. units]"
 
-plot "ThX_decay.data" using 1:2:3 with yerrorbars title "Data", \
+plot "ThX_decay.data" using 1:2:3 with errorbars title "Data", \
 	f(x) title "F_c(t)",\
 	fplus(x) title "F_{c+dc}(t)",\
 	fminus(x) title "F_{c-dc}(t)";
