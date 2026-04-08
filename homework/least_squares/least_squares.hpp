@@ -1,3 +1,4 @@
+#pragma once
 #include "../lib/matrix.hpp"
 #include <functional>
 #include <vector>
