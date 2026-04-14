@@ -330,6 +330,8 @@ namespace pp {
 			this->size = size;
 		}
 
+		Vector() = default;
+
 		Vector(const VectorBase<S>& other) : Vector(other.size) {
 			for(size_t i = 0; i < size; ++i) (*this)[i] = other[i];
 		}
