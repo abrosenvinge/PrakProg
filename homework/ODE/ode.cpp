@@ -18,44 +18,45 @@ namespace pp {
 	constexpr double p20 = 25./216., p21 = 0., p22 = 1408./2565.,  p23 = 2197./4104., p24 = -1./5.;
 
 	std::tuple<Vector<double>, Vector<double>> rkstep45(
-			const std::function<Vector<double>(double, const Vector<double>&)> f,
+			const std::function<Vector<double>(double, const Vector<double>&)>& f,
 			double x,
 			const Vector<double>& y,
 			double h
 	) {
 		Vector<double> k0 = f(x, y);
-		Vector<double> k1 = f(x + a1*h, y + c10*k0*h);
-		Vector<double> k2 = f(x + a2*h, y + c20*k0*h + c21*k1*h);
-		Vector<double> k3 = f(x + a3*h, y + c30*k0*h + c31*k1*h + c32*k2*h);
-		Vector<double> k4 = f(x + a4*h, y + c40*k0*h + c41*k1*h + c42*k2*h + c43*k3*h);
-		Vector<double> k5 = f(x + a5*h, y + c50*k0*h + c51*k1*h + c52*k2*h + c53*k3*h + c54*k4*h);
+		Vector<double> k1 = f(x + a1*h, y + (c10*h)*k0);
+		Vector<double> k2 = f(x + a2*h, y + (c20*h)*k0 + (c21*h)*k1);
+		Vector<double> k3 = f(x + a3*h, y + (c30*h)*k0 + (c31*h)*k1 + (c32*h)*k2);
+		Vector<double> k4 = f(x + a4*h, y + (c40*h)*k0 + (c41*h)*k1 + (c42*h)*k2 + (c43*h)*k3);
+		Vector<double> k5 = f(x + a5*h, y + (c50*h)*k0 + (c51*h)*k1 + (c52*h)*k2 + (c53*h)*k3 + (c54*h)*k4);
 
-		Vector<double> y_next = y + h*(p10*k0 + p11*k1 + p12*k2 + p13*k3 + p14*k4 + p15*k5);
-		Vector<double> y_err = h*((p10-p20)*k0 + (p11-p21)*k1 + (p12-p22)*k2 + (p13-p23)*k3 + (p14-p24)*k4 + p15*k5);
+		Vector<double> y_next = y + (p10*h)*k0 + (p11*h)*k1 + (p12*h)*k2 + (p13*h)*k3 + (p14*h)*k4 + (p15*h)*k5;
+		Vector<double> y_err = ((p10-p20)*h)*k0 + ((p11-p21)*h)*k1 + ((p12-p22)*h)*k2 + ((p13-p23)*h)*k3 + ((p14-p24)*h)*k4 + (p15*h)*k5;
 
 		return std::tuple(y_next, y_err);
 	}
 
 	std::tuple<std::vector<double>, std::vector<Vector<double>>> driver(
-			std::function<Vector<double>(double, const Vector<double>&)> f,
+			const std::function<Vector<double>(double, const Vector<double>&)>& f,
 			double a,
 			double b,
 			const VectorBase<double>& y0,
 			double h,
 			double acc,
-			double eps
+			double eps,
+			double max_step
 	) {
 		double x = a;
 		Vector<double> y(y0);
-		std::vector<Vector<double>> y_out;
-		std::vector<double> x_out;
+		std::vector<Vector<double>> y_out {y0};
+		std::vector<double> x_out {x};
 
-		while (x <= b) {
+		while (x < b) {
 			if (x + h > b) h = b - x;
 			
 			auto [y_next, y_err] = rkstep45(f, x, y, h);
 
-			double tol = (acc + eps+norm(y_next)) * std::sqrt(h/(b-a));
+			double tol = (acc + eps*norm(y_next)) * std::sqrt(h/(b-a));
 			double err = norm(y_err);
 
 			if (err <= tol) {
@@ -67,6 +68,7 @@ namespace pp {
 
 			if (err != 0) h *= std::min(std::pow(tol/err, 0.25) * 0.95, 2.);
 			else h *= 2.;
+			h = std::min(h, max_step);
 		}
 
 		return std::tuple(x_out, y_out);
