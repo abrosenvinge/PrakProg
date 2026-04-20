@@ -7,6 +7,12 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o ode.o
 
+three_body_plot.png: three_body_plot.gp three_body_plot.data
+	$(PLOT) $+
+
+three_body_plot.data: main Makefile
+	./$< --mode three_body_problem --start 0 --end 9.96150788812 --eps 0.00001 --acc 0.00001 > $@
+
 rel_orbit_plot.png: rel_orbit_plot.gp rel_orbit_plot.data
 	$(PLOT) $+
 
