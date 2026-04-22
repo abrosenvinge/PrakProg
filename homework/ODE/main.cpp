@@ -2,7 +2,6 @@
 #include "../lib/matrix.hpp"
 #include <iostream>
 #include <limits>
-#include <numbers>
 #include <string>
 
 int main(int argc, char** argv) {
@@ -103,21 +102,18 @@ int main(int argc, char** argv) {
 		};
 
 		if (!read_y0) {
-			const double _vx = 0.93240737 * 2 * std::numbers::pi,
-				  		_vy = 0.86473146 * 2 * std::numbers::pi;
+			const double _vx = 0.93240737,
+				  		_vy = 0.86473146;
 
 			y0 = pp::Vector<double>(12);
 			
-			// Start conditions from some python script at
-			// https://github.com/spaceman-source/Three-Body_Problem/blob/main/Checiner-Montgomery%20Solution.py
-			// (couldn't find them on wikipedia)
 			y0[0] = 0.5*_vx; y0[1] = 0.5*_vy;
-			y0[2] = -_vx; y0[3] = -_vy;
-			y0[4] = 0.5*_vx; y0[5] = 0.5*_vy;
+			y0[2] = 0.5*_vx; y0[3] = 0.5*_vy;
+			y0[4] = -_vx; y0[5] = -_vy;
 
-			y0[6] = -0.97000436; y0[7] = 0.24308753;
-			y0[8] = 0.; y0[9] = 0.;
-			y0[10] = 0.97000436; y0[11] = -0.24308753;
+			y0[6] = 0.97000436; y0[7] = -0.24308753;
+			y0[8] = -0.97000436; y0[9] = 0.24308753;
+			y0[10] = 0.; y0[11] = 0.;
 		}
 
 	}
