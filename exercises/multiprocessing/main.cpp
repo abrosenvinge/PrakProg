@@ -20,11 +20,13 @@ void harm(datum& p) {
 int main(int argc, char** argv) {
 	int nterms = (int) 1e9;
 	int nthreads = 1;
+	bool test = false;
 
 	for (int i = 0; i < argc; i++) {
 		std::string arg = argv[i];
 		if (arg == "--terms" && ++i < argc) nterms = std::stoi(argv[i]);
 		else if (arg == "--threads" && ++i < argc) nthreads = std::stoi(argv[i]);
+		else if (arg == "--test") test = true;
 	}
 
 	std::cerr << "Terms: " << nterms << "\nThreads: " << nthreads << "\n";
@@ -46,11 +48,13 @@ int main(int argc, char** argv) {
 
 	std::cout << "Total = " << total << "\n";
 
-	datum test_data;
-	test_data.start = 1; test_data.start = nterms;
+	if (test) {
+		datum test_data;
+		test_data.start = 1; test_data.end = nterms;
 
-	harm(test_data);
-	std::cout << "Test = " << test_data.sum << "\n";
+		harm(test_data);
+		std::cout << "Test = " << test_data.sum << "\n";
+	}
 
 	return 0;
 }
