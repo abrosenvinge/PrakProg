@@ -11,7 +11,7 @@ set title "Function"
 plot data index 0 using 1:2 with points title "Known points",\
 	data index 1 using 1:2 with lines title "Linear interpolation",\
 	data index 1 using 1:5 with lines title "Quadratic interpolation",\
-	data index 1 using 1:8 with lines title "Cubic interpolation"
+	data index 1 using 1:8 with lines title "Functional style quadratic"
 
 set title "Anti-derivative"
 set ylabel "F(x)"

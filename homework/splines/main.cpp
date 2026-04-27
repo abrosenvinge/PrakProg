@@ -64,7 +64,7 @@ int main(int argc, char** argv) {
 
 	pp::LinearSpline<double> lin_spline(x,y);
 	pp::QuadraticSpline<double> quad_spline(x,y);
-	pp::CubicSpline<double> cubic_spline(x,y);
+	auto quad_spline_func = pp::quadratic_spline(x,y);
 
 	for (size_t i = 0; i < n_interp_points; ++i) {
 		double zi = start + i * zstep;
@@ -75,9 +75,7 @@ int main(int argc, char** argv) {
 				  << quad_spline.eval(zi) << " "
 				  << quad_spline.integral(zi) << " " 
 				  << quad_spline.derivative(zi) << " "
-				  << cubic_spline.eval(zi) << " "
-				  // << cubic_spline.integral(zi) << " " 
-				  // << cubic_spline.derivative(zi) << " "
+				  << quad_spline_func(zi)
 				  << "\n";
 	}
 }
