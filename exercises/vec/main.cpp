@@ -41,4 +41,6 @@ int main() {
 	std::cout << "w = " << complex_v << "\n";
 	complex_v *= 5;
 	std::cout << "w *= 5; w = " << complex_v << "\n";
+
+	std::cout << "(6) Difference is whether u is passed by reference or copied when operator is called. Apparently modern version is better for cases like a+b+c";
 }
