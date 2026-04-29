@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 	double x;
 	while (std::cin >> x) print_sin_cos(x);
 
-	if (!(in_file == "") && !(out_file == "")) {
+	if ((in_file != "") && (out_file != "")) {
 		std::ifstream input(in_file);
 		std::ofstream output(out_file);
 
