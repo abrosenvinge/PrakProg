@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -40,9 +41,15 @@ int main(int argc, char** argv) {
 
 		output << "From file " << in_file << "\n";
 
-		double x;
-		while (input >> x) {
-			print_sin_cos(x, output);
+		if (input.is_open() && output.is_open()) {
+			double x;
+			while (input >> x) {
+				print_sin_cos(x, output);
+			}
+		}
+		else {
+			std::cout << "Could not open files " << in_file << " or " << out_file << std::endl;
+			return EXIT_FAILURE;
 		}
 		input.close();
 		output.close();

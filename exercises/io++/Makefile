@@ -7,7 +7,7 @@ objects = main.o input.o
 all : Out.txt
 	cat Out.txt
 
-Out.txt : main cmd-input.txt stdin-input.txt file-input.txt
+Out.txt output.txt &: main cmd-input.txt stdin-input.txt file-input.txt
 	./main -i file-input.txt -o output.txt $$(cat cmd-input.txt) < stdin-input.txt > $@
 
 main: main.o
