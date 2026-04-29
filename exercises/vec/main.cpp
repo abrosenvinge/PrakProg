@@ -37,7 +37,8 @@ int main() {
 	const std::complex<double> Im = std::complex(0.,1.);
 	const std::complex<double> Re = std::complex(1.,0.);
 	vec::vec<std::complex<double>> complex_v(Re, Im, Re + Im);
-	std::cout << complex_v << "\n";
+	std::cout << "Complex vectors:\n";
+	std::cout << "w = " << complex_v << "\n";
 	complex_v *= 5;
-	std::cout << complex_v << "\n";
+	std::cout << "w *= 5; w = " << complex_v << "\n";
 }
