@@ -40,6 +40,7 @@ int main(int argc, char** argv) {
 		data[i].end = 1 + (nterms/nthreads) * (i + 1);
 		threads.emplace_back(harm, std::ref(data[i]));
 	}
+	data.back().end = nterms + 1;
 
 	for (std::thread &thread : threads) thread.join();
 
@@ -50,7 +51,7 @@ int main(int argc, char** argv) {
 
 	if (test) {
 		datum test_data;
-		test_data.start = 1; test_data.end = nterms;
+		test_data.start = 1; test_data.end = nterms + 1;
 
 		harm(test_data);
 		std::cout << "Test = " << test_data.sum << "\n";
