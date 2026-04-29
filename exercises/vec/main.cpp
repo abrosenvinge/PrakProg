@@ -8,6 +8,7 @@ int main() {
 	vec::vec<double> u(4,5,6);
 
 	std::cout << "v = " << v << "\n";
+	std::cout << "u = " << u << "\n";
 	std::cout << "-v = " << -v << "\n";
 
 	v += u;
