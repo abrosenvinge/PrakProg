@@ -17,11 +17,11 @@ out.times: main Makefile
 	done
 
 Out.txt: main
-	./$< --test > $@
+	./$< --test --threads 10 > $@
 
 main: main.o
 
 main.o: main.cpp
 
 clean:
-	$(RM) main Out.txt $objects
+	$(RM) main Out.txt $(objects)
