@@ -6,6 +6,7 @@ long double epsilon: 0.000000000000000000108420217249, 0.00000000000000000010842
 The computed ones are the same as the ones in std::numeric_limits
 
 Opg. 2
+tiny = 0.00000000000000011
 a = 1. + tiny + tiny = 1.00000000000000000
 b = tiny + tiny + 1. = 1.00000000000000022
 a == b: false

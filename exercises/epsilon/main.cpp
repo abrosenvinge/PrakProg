@@ -38,6 +38,7 @@ int main() {
 	double epsilon = std::pow(2, -52);
 	double tiny = epsilon / 2.;
 	double a = 1. + tiny + tiny;
+	std::cout << "tiny = " << tiny << "\n";
 	std::cout << "a = 1. + tiny + tiny = " << a << "\n";
 
 	double b = tiny + tiny + 1.;
