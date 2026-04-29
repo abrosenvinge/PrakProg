@@ -10,5 +10,5 @@ Exercises can be found in the _exercises_ directory.
  - [x] io++
  - [x] vec template
  - [x] plots
-    - [] (extra) 3d plot
+    - [ ] (extra) 3d plot
  - [x] multiprocessing
