@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <ostream>
 #include <cmath>
 #include "../epsilon/approx.hpp"
@@ -50,6 +51,10 @@ namespace vec {
 			y *= a;
 			z *= a;
 			return *this;
+		}
+
+		void print() {
+			std::cout << *this;
 		}
 
 		friend std::ostream& operator<<(std::ostream& s, const vec& u) {
