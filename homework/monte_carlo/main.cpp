@@ -14,7 +14,7 @@ void pprint_test(std::string name,
 	pp::LCG lcg_rand(74804);
 	pp::std_uniform_dist uniform_rand;
 
-	size_t N = 1000000;
+	size_t N = 100000;
 
 	auto [res_lcg, err_lcg] = pp::plainmc(f, a, b, N, lcg_rand);
 	auto [res_uniform, err_uniform] = pp::plainmc(f, a, b, N, uniform_rand);

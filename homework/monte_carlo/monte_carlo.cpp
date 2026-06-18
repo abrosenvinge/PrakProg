@@ -95,16 +95,21 @@ namespace pp {
 										size_t nmin,
 										std_uniform_dist rand_gen)
 	{
-		if (N <= nmin) return plainmc(f,a,b,N,rand_gen);
+		if (N == 0) return std::tuple(0,0);
+		else if (N <= nmin) return plainmc(f,a,b,N,rand_gen);
 		else {
 			size_t dim = a.size();
-			// double V = 1.;
-			// for (size_t i = 0; i < dim; ++i) V *= b[i] - a[i];
+			double V = 1.;
+			for (size_t i = 0; i < dim; ++i) V *= b[i] - a[i];
+			
 			std::vector<int> n_left(dim), n_right(dim);
 			std::vector<double> x(dim), sum_left(dim), sum_right(dim), sum_sq_left(dim), sum_sq_right(dim);
+			double sum = 0, sum_sq = 0;
 			for (size_t i = 0; i < nmin; ++i) {
 				for (size_t j = 0; j < dim; ++j) x[j] = a[j] + rand_gen() * (b[j] - a[j]);
 				double fx = f(x);
+				sum += fx;
+				sum_sq += fx*fx;
 				
 				for (size_t j = 0; j < dim; ++j) {
 					if (x[j] < 0.5 * (b[j] + a[j])) {
@@ -136,18 +141,39 @@ namespace pp {
 								- std::pow(sum_right[max_var_dim]/n_right[max_var_dim],2);
 			double total_var = var_left + var_right;
 
-			size_t N_left = (size_t) (N-nmin) * var_left/total_var;
-			size_t N_right = (size_t) (N-nmin) * var_right/total_var;
+			size_t N_remaining = N - nmin;
 
-			// std::cerr << N_left << " " << N_right << "\n";
+			size_t N_left,N_right;
+			if (var_left <= 0. && var_right <= 0.) {
+				// N_left = N_remaining / 2; N_right = N_remaining - N_left;
+				return std::tuple(0.,0.);
+			}
+			else if (var_left <= 0.) {
+				N_left = 0; N_right = N_remaining;
+			}
+			else if (var_right <= 0.) {
+				N_right = 0; N_left = N_remaining;
+			}
+			else {
+				N_left = (size_t) (N_remaining * var_left/total_var);
+				N_right = N_remaining - N_left;
+			}
+			
+			if (var_left <= 0 || var_right <= 0) 
+				std::cerr << var_left << " " << var_right << " " << total_var << " " << N_left << " " << N_right << "\n";
 
 			std::vector<double> b_left = b, a_right = a;
 			b_left[max_var_dim] = 0.5 * (a[max_var_dim] + b[max_var_dim]);
 			a_right[max_var_dim] = 0.5 * (a[max_var_dim] + b[max_var_dim]);
 
-			auto [left,left_err] = stratified_recursive(f, a, b_left, (N-nmin)/2, nmin, rand_gen);
-			auto [right, right_err] = stratified_recursive(f, a_right, b, (N-nmin)/2, nmin, rand_gen);
-			return std::tuple(left + right, std::sqrt(left_err*left_err + right_err*right_err));
+			auto [left,left_err] = stratified_recursive(f, a, b_left, N_left, nmin, rand_gen);
+			auto [right, right_err] = stratified_recursive(f, a_right, b, N_right, nmin, rand_gen);
+
+			double total_left = (0.5*V * sum_left[max_var_dim] + left * N_left) / (n_left[max_var_dim] + N_left);
+			double total_right = (0.5*V * sum_right[max_var_dim] + right * N_right) / (n_right[max_var_dim] + N_right);
+
+			return std::tuple(total_left + total_right, std::sqrt(left_err*left_err + right_err*right_err));
+			// return std::tuple(0,0);
 		}
 	}
 }

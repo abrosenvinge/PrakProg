@@ -1,6 +1,5 @@
 #pragma once
 #include <cmath>
-#include <limits>
 #include <random>
 #include <tuple>
 #include <vector>
@@ -87,7 +86,7 @@ namespace pp {
 										const std::vector<double>& a,
 										const std::vector<double>& b,
 										size_t N,
-										size_t nmin = 20);
+										size_t nmin = 1000);
 
 	std::tuple<double, double> stratified_recursive(const std::function<double(const std::vector<double>&)>& f,
 										const std::vector<double>& a,
