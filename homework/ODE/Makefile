@@ -7,6 +7,8 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o ode.o
 
+all: three_body_plot.png rel_orbit_plot.png lotka_volterra_plot.png shm_plot.png
+
 three_body_plot.png: three_body_plot.gp three_body_plot.data
 	$(PLOT) $+
 

@@ -2,6 +2,7 @@
 #include <cmath>
 #include <complex>
 #include <cstddef>
+#include <initializer_list>
 #include <iostream>
 #include <ostream>
 #include <stdexcept>
@@ -222,6 +223,12 @@ namespace pp {
 		out -= b;
 		return out;
 	}
+	template <typename S>
+	Matrix<S> operator-(const MatrixBase<S>& a) {
+		Matrix<S> out(a);
+		out *= -1;
+		return out;
+	}
 
 	template <typename S>
 	Matrix<S> operator*(const S& c, const MatrixBase<S>& a) {
@@ -336,6 +343,10 @@ namespace pp {
 			for(size_t i = 0; i < size; ++i) (*this)[i] = other[i];
 		}
 
+		Vector(std::initializer_list<S> init_list) : data(init_list) {
+			this->size = init_list.size();
+		}
+
 		S& operator[](size_t i) override {
 			return data[i];
 		}
@@ -402,6 +413,13 @@ namespace pp {
 	Vector<S> operator-(const VectorBase<S>& a, const VectorBase<S>& b) {
 		Vector<S> out(a);
 		out -= b;
+		return out;
+	}
+
+	template <typename S>
+	Vector<S> operator-(const VectorBase<S>& a) {
+		Vector<S> out(a);
+		out *= -1;
 		return out;
 	}
 

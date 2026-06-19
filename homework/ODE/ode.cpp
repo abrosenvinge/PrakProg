@@ -73,4 +73,39 @@ namespace pp {
 
 		return std::tuple(x_out, y_out);
 	}
+
+	// same as above, but only return f(b)
+	Vector<double> endpoint_driver(
+			const std::function<Vector<double>(double, const Vector<double>&)>& f,
+			double a,
+			double b,
+			const VectorBase<double>& y0,
+			double h,
+			double acc,
+			double eps,
+			double max_step
+	) {
+		double x = a;
+		Vector<double> y(y0);
+
+		while (x < b) {
+			if (x + h > b) h = b - x;
+			
+			auto [y_next, y_err] = rkstep45(f, x, y, h);
+
+			double tol = (acc + eps*norm(y_next)) * std::sqrt(h/(b-a));
+			double err = norm(y_err);
+
+			if (err <= tol) {
+				x += h;
+				y = y_next;
+			}
+
+			if (err != 0) h *= std::min(std::pow(tol/err, 0.25) * 0.95, 2.);
+			else h *= 2.;
+			h = std::min(h, max_step);
+		}
+
+		return y;
+	}
 }
