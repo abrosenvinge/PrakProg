@@ -1,6 +1,5 @@
 #include "../lib/matrix.hpp"
 #include <functional>
-#include <iostream>
 #include "../linear_equations/qr.hpp"
 #include "../ODE/ode.hpp"
 
@@ -22,9 +21,9 @@ namespace pp {
 
 	Vector<double> newton(const std::function<Vector<double>(Vector<double>)>& f,
 							Vector<double> x,
-							double acc = 0.01,
-							double lambda_min = 0.001,
-							size_t max_iter = 100)
+							double acc,
+							double lambda_min,
+							size_t max_iter)
 	{
 		Vector<double> fx = f(x);
 		Matrix<double> jac(fx.size, x.size);
@@ -57,18 +56,45 @@ namespace pp {
 		return x;
 	}
 
-	std::vector<Vector<double>> newton(
-							const std::function<Vector<double>(Vector<double>)>& f,
-							const std::vector<Vector<double>>& x,
+	Vector<double> newton_qls(const std::function<Vector<double>(Vector<double>)>& f,
+							Vector<double> x,
 							double acc,
 							double lambda_min,
-							size_t max_iter) 
+							size_t max_iter)
 	{
-		std::vector<Vector<double>> out;
-		out.reserve(x.size());
-		for (const Vector<double>& x0 : x) 
-			out.push_back(newton(f, x0, acc, lambda_min, max_iter));
-		return out;
+		Vector<double> fx = f(x);
+		Matrix<double> jac(fx.size, x.size);
+
+		double norm_fx = norm(fx);
+		size_t iters = 0;
+
+		while (norm_fx >= acc && iters <= max_iter) {
+			Jacobian(f, x, fx, jac);
+
+			QR<double> qr(jac);
+			Vector<double> dx = qr.solve(-fx);
+			
+			double lambda = 1.;
+			double phi0 = 0.5*norm_fx, phi_0 = -norm_fx;
+
+			pp::Vector<double> new_x = x + dx;
+			pp::Vector<double> new_fx = f(new_x);
+
+			double new_norm_fx = norm(new_fx);
+			while (new_norm_fx > (1. - 0.5*lambda)*norm_fx && lambda >= lambda_min) {
+				double phi_trial = 0.5 * new_norm_fx;
+				double c = (phi_trial - phi0 - phi_0 * lambda) / (lambda*lambda);
+				lambda = - phi_0 / (2*c);
+				new_x = x + lambda * dx;
+				new_fx = f(new_x);
+				new_norm_fx = norm(new_fx);
+			}
+			fx = new_fx;
+			x = new_x;
+			norm_fx = new_norm_fx;
+			iters++;
+		}
+		return x;
 	}
 
 	std::function<pp::Vector<double>(double,pp::Vector<double>)> construct_ode(double E0) {

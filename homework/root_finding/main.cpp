@@ -3,7 +3,6 @@
 #include <format>
 #include <functional>
 #include <iostream>
-#include <limits>
 #include <string>
 #include "../ODE/ode.hpp"
 // #include "../lib/matrix.hpp"
@@ -13,29 +12,32 @@ void test(std::string name,
 		std::vector<pp::Vector<double>> x0,
 		std::vector<pp::Vector<double>> correct_x)
 {
-	auto res = pp::newton(f, x0, 0.01, 0.001, 10000);
 
 	std::cout << std::format("Test: {}:\n", name);
 	std::cout << "	Correct root(s):\n";
 	for (size_t j = 0; j < correct_x[0].size; ++j) {
 		std::cout << "		";
 		for (size_t i = 0; i < correct_x.size(); ++i) {
-			std::cout << std::format("{:<15} ", correct_x[i][j]);
+			std::cout << std::format("{:<10} ", correct_x[i][j]);
 		}
 		std::cout << "\n";
 	}
-	for (size_t i = 0; i < res.size(); ++i) {
+	for (size_t i = 0; i < x0.size(); ++i) {
+		int n_evals = 0, n_evals_qls = 0;
 		std::cout << "\n";
 		pp::Vector<double> x0i = x0[i];
-		pp::Vector<double> resi = res[i];
-		std::cout << std::format("	Method: {}\n", "Newton");
-		std::cout << std::format("	Norm: {}\n", norm(f(resi)));
-		std::cout << std::format("		{:<15} {:<15}\n", "x0", "Result");
+		auto resi = pp::newton([&n_evals,f](auto x){n_evals++; return f(x);}, x0i, 0.0000001, 0.0001, 100000);
+		auto resi_qls = pp::newton_qls([&n_evals_qls,f](auto x){n_evals_qls++; return f(x);}, x0i, 0.0000001, 0.0001, 100000);
+		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "Method:", "Newton", "QLS");
+		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "Norm:", norm(f(resi)), norm(f(resi_qls)));
+		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "#evaluations:", n_evals, n_evals_qls);
+		std::cout << std::format("		{:<25} {:<25}\n", "x0", "Results");
 		
 		for (size_t j = 0; j < resi.size; ++j) {
-			std::cout << std::format("		{:<15} {:<15}\n", x0i[j], resi[j]);
+			std::cout << std::format("		{:<25} {:<25} {:<25}\n", x0i[j], resi[j], resi_qls[j]);
 		}
 	}
+	std::cout << "\n";
 }
 
 void tests() {
@@ -82,8 +84,7 @@ void tests() {
 				{3.584428, -1.848126}});
 }
 
-void shooting_method_pprint(double rmin, double rmax, double E0) {
-	double acc = 0.0000001, eps = 0.0000001;
+void shooting_method_pprint(double rmin, double rmax, double E0, double acc, double eps) {
 	double E = pp::shooting_method_hydrogen(rmin,rmax,E0,acc,eps);
 	pp::Vector<double> y0 {rmin-rmin*rmin, 1.-2.*rmin};
 	// std::cerr << E << " " << M({E}) << "\n";
@@ -96,32 +97,51 @@ void shooting_method_pprint(double rmin, double rmax, double E0) {
 	std::cout << std::format("	M(E0) = {}\n", M);
 }
 
-void shooting_method_wavefunc(double rmin, double rmax, double E0) {
-	double acc = 0.0000001, eps = 0.0000001;
+void shooting_method_wavefunc(double rmin, double rmax, double E0, double acc, double eps) {
 	double E = pp::shooting_method_hydrogen(rmin,rmax,E0,acc,eps);
 	pp::Vector<double> y0 {rmin-rmin*rmin, 1.-2.*rmin};
 
 	auto [x,y] = pp::driver(pp::construct_ode(E), rmin, rmax, y0, 0.125, acc, eps);
 
 	for (size_t i = 0; i < x.size(); ++i) {
-		std::cout << x[i] << " " << y[i][0] << " " << x[i] * std::exp(-x[i]) << "\n";
+		std::cout << x[i] << " " << y[i][0] << "\n";
+	}
+}
+
+void actual_wavefunc(double rmin, double rmax, int steps) {
+	double h = (rmax - rmin) / steps;
+	double r = rmin;
+	for (int i = 0; i < steps; ++i) {
+		std::cout << std::format("{} {}\n", r, r * std::exp(-r));
+		r += h;
 	}
 }
 
 int main(int argc, char** argv) {
+	double rmin = 0.0000001, rmax = 8., acc = 0.0000001, eps = 0.0000001, E0 = -0.6;
+	int steps = 1000;
 	for (int i = 0; i < argc; ++i) {
 		std::string arg = argv[i];
-		if (arg == "--test") {
+		
+		if (arg == "--rmax" && ++i < argc) rmax = std::stod(argv[i]);
+		else if (arg == "--rmin" && ++i < argc) rmin = std::stod(argv[i]);
+		else if (arg == "--acc" && ++i < argc) acc = std::stod(argv[i]);
+		else if (arg == "--eps" && ++i < argc) eps = std::stod(argv[i]);
+		else if (arg == "--E0" && ++i < argc) E0 = std::stod(argv[i]);
+		else if (arg == "--steps" && ++i < argc) steps = std::stoi(argv[i]);
+		else if (arg == "--test") {
 			tests();
 			std::cout << "\n";
-			shooting_method_pprint(0.0000001, 8., -0.6);
+			shooting_method_pprint(rmin, rmax, E0, acc, eps);
 		}
-		else if (arg == "--shoot" && i + 4 < argc) {
-			double rmin = std::stod(argv[i+1]), rmax = std::stod(argv[i+2]),
-				   acc = std::stod(argv[i+3]), eps = std::stod(argv[i+4]);
-			i += 4;
+		else if (arg == "--shoot") {
+			std::cout << std::format("{}\n", pp::shooting_method_hydrogen(rmin, rmax, E0, acc, eps));
 		}
-		else if (arg == "--wavefunc" && i + 2 < argc) {
+		else if (arg == "--wavefunc") {
+			shooting_method_wavefunc(rmin, rmax, E0, acc, eps);
+		}
+		else if (arg == "--actual_wavefunc") {
+			actual_wavefunc(rmin, rmax, steps);
 		}
 	}
 }
