@@ -1,0 +1,80 @@
+Test: f(x,y) = x^2 + y^2:
+	Correct root(s):
+		0          
+		0          
+
+		Norm(g):                  5.620310866129615e-05    
+		#evaluations:             19                       
+		#iterations:              1                        
+		x0                        Result                   
+		1                         4.776489325175604e-07    
+		2                         2.8089916244367075e-05   
+
+		Norm(g):                  3.5334712473290066e-05   
+		#evaluations:             19                       
+		#iterations:              1                        
+		x0                        Result                   
+		3                         1.4478479513080345e-06   
+		4                         -1.7614766877116494e-05  
+
+Test: Rosenbrock:
+	Correct root(s):
+		1          
+		1          
+
+		Norm(g):                  5.767921457814538e-06    
+		#evaluations:             89                       
+		#iterations:              8                        
+		x0                        Result                   
+		1.5                       0.9999982145408494       
+		0.5                       0.9999964092672547       
+
+		Norm(g):                  2.615977308804797e-05    
+		#evaluations:             140                      
+		#iterations:              13                       
+		x0                        Result                   
+		3                         0.9999997066094531       
+		4                         0.9999993732630965       
+
+Test: Himmelblau:
+	Correct root(s):
+		3          -2.805118  -3.77931   3.584428   
+		2          3.131312   -3.283186  -1.848126  
+
+		Norm(g):                  4.914023917455449e-08    
+		#evaluations:             69                       
+		#iterations:              6                        
+		x0                        Result                   
+		2.5                       2.999999971015144        
+		4                         1.9999999960329218       
+
+		Norm(g):                  5.49806513239406e-07     
+		#evaluations:             60                       
+		#iterations:              5                        
+		x0                        Result                   
+		-2                        -2.80511811464067        
+		2                         3.1313124947521835       
+
+		Norm(g):                  4.943221988061001e-07    
+		#evaluations:             59                       
+		#iterations:              5                        
+		x0                        Result                   
+		-5                        -3.7793102975705763      
+		-5                        -3.283186032019063       
+
+		Norm(g):                  5.447121760995206e-07    
+		#evaluations:             59                       
+		#iterations:              5                        
+		x0                        Result                   
+		5                         3.5844283077258465       
+		-3                        -1.8481265230514072      
+
+
+Higgs fit:
+	Optimal parameters
+		m = 125.97218681175582
+		Γ = 2.0863212475214903
+		A = 9.876170720573384
+
+	χ² = 26.869511778704783
+	dof =27
