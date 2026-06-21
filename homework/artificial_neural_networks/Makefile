@@ -7,6 +7,8 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o ann.o
 
+all: linear_plot.svg damped_oscillation_plot.svg
+
 damped_oscillation_plot.svg: ann_plot.gp damped_oscillation.data
 	$(PLOT) $+
 

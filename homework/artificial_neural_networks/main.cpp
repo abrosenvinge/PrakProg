@@ -36,6 +36,7 @@ void make_plot_data(size_t n,
 		size_t n_training_points,
 		size_t n_plot_points)
 {
+	double h = (b-a)/n_plot_points;
 	pp::ann_Gaussian_wavelet ann(n, p0);
 
 	std::vector<double> x(n_training_points), y(n_training_points);
@@ -43,14 +44,22 @@ void make_plot_data(size_t n,
 		x[i] = a + (b-a)*i/(x.size()-1);
 		y[i] = f(x[i]);
 	}
-	ann.train(x,y);
-
 	for (size_t i = 0; i < x.size(); ++i) {
 		double xi = x[i];
 		std::cout << std::format("{} {} {} {} {}\n", xi, y[i], F(xi), df(xi), ddf(xi));
 	}
 	std::cout << "\n\n";
-	double h = (b-a)/n_plot_points;
+	for (double xi = a; xi <= b; xi += h) {
+		std::cout << std::format("{} {} {} {} {}\n", xi, 
+				ann.response(xi), 
+				ann.integral(a,xi), 
+				ann.deriv(xi),
+				ann.second_deriv(xi));
+	}
+
+	ann.train(x,y);
+
+	std::cout << "\n\n";
 	for (double xi = a; xi <= b; xi += h) {
 		std::cout << std::format("{} {} {} {} {}\n", xi, 
 				ann.response(xi), 
