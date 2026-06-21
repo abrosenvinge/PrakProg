@@ -33,27 +33,27 @@ namespace pp {
 		return out;
 	}
 
-	pp::Vector<double> Halton::operator()(size_t n) {
+	Vector<double> Halton::operator()(size_t n) {
 		size_t N = primes.size();
-		pp::Vector<double> out(N);
+		Vector<double> out(N);
 		for (size_t i = 0; i < N; ++i) {
 			out[i] = corput(n, primes[i]);
 		}
 		return out;
 	}
 
-	pp::Vector<double> Lattice::operator()(size_t n) {
+	Vector<double> Lattice::operator()(size_t n) {
 		size_t N = alphas.size();
-		pp::Vector<double> out(N);
+		Vector<double> out(N);
 		for (size_t i = 0; i < N; ++i) {
 			out[i] = std::fmod(n*alphas[i], 1);
 		}
 		return out;
 	}
 
-	std::tuple<double, double> quasirandmc(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> quasirandmc(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N) {
 		size_t dim = a.size;
 		Halton rand1(dim);
@@ -63,7 +63,7 @@ namespace pp {
 		for (size_t i = 0; i < dim; ++i) V *= b[i] - a[i];
 		double sum1 = 0., sum2 = 0.;
 
-		pp::Vector<double> x1(dim), x2(dim);
+		Vector<double> x1(dim), x2(dim);
 		for (size_t i = 0; i < N; ++i) {
 			x1 = rand1(i+1); x2 = rand2(i+1);
 			for (size_t j = 0; j < dim; ++j) {
@@ -78,9 +78,9 @@ namespace pp {
 
 		return std::tuple(0.5 * (mean1 + mean2) * V, std::abs(mean1 - mean2) * V);
 	}
-	std::tuple<double, double> stratified(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> stratified(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N,
 										size_t nmin) 
 	{
@@ -88,9 +88,9 @@ namespace pp {
 		return stratified_recursive(f,a,b,N,nmin,rand_gen);
 	}
 
-	std::tuple<double, double> stratified_recursive(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> stratified_recursive(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N,
 										size_t nmin,
 										std_uniform_dist rand_gen)
@@ -104,7 +104,7 @@ namespace pp {
 			
 			std::vector<int> n_left(dim), n_right(dim);
 			std::vector<double> sum_left(dim), sum_right(dim), sum_sq_left(dim), sum_sq_right(dim);
-			pp::Vector<double> x(dim);
+			Vector<double> x(dim);
 			for (size_t i = 0; i < nmin; ++i) {
 				for (size_t j = 0; j < dim; ++j) x[j] = a[j] + rand_gen() * (b[j] - a[j]);
 				double fx = f(x);
@@ -158,7 +158,7 @@ namespace pp {
 			size_t n_left_tot = N_left + n_left_max;
 			size_t n_right_tot = N_right + n_right_max;
 
-			pp::Vector<double> b_left = b, a_right = a;
+			Vector<double> b_left = b, a_right = a;
 			b_left[max_var_dim] = 0.5 * (a[max_var_dim] + b[max_var_dim]);
 			a_right[max_var_dim] = 0.5 * (a[max_var_dim] + b[max_var_dim]);
 

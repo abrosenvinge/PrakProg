@@ -8,9 +8,9 @@
 
 namespace pp {
 	template <class RAND_TYPE>
-	std::tuple<double, double> plainmc(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> plainmc(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N,
 										RAND_TYPE& rand_gen) 
 	{
@@ -18,7 +18,7 @@ namespace pp {
 		double V = 1;
 		for (size_t i = 0; i < dim; ++i) V *= b[i] - a[i];
 		double sum = 0., sq_sum = 0.;
-		pp::Vector<double> x(dim);
+		Vector<double> x(dim);
 		for (size_t i = 0; i < N; ++i) {
 			for (size_t j = 0; j < dim; ++j) x[j] = a[j] + rand_gen() * (b[j] - a[j]);
 			double fx = f(x);
@@ -65,12 +65,12 @@ namespace pp {
 		std::vector<int> primes;
 		Halton(size_t n) : primes(generate_primes(n)) {}
 
-		pp::Vector<double> operator()(size_t n);
+		Vector<double> operator()(size_t n);
 	};
 
-	std::tuple<double, double> quasirandmc(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> quasirandmc(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N);
 
 	class Lattice {
@@ -80,18 +80,18 @@ namespace pp {
 			for (int p : generate_primes(n)) alphas.push_back(std::fmod(std::sqrt(p), 1));
 		}
 
-		pp::Vector<double> operator()(size_t n);
+		Vector<double> operator()(size_t n);
 	};
 
-	std::tuple<double, double> stratified(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> stratified(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N,
 										size_t nmin = 1000);
 
-	std::tuple<double, double> stratified_recursive(const std::function<double(const pp::Vector<double>&)>& f,
-										const pp::Vector<double>& a,
-										const pp::Vector<double>& b,
+	std::tuple<double, double> stratified_recursive(const std::function<double(const Vector<double>&)>& f,
+										const Vector<double>& a,
+										const Vector<double>& b,
 										size_t N,
 										size_t nmin,
 										std_uniform_dist rand_gen);

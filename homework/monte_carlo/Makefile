@@ -12,6 +12,7 @@ all: Out.txt scaling_plot.svg
 Out.txt: main
 	./$< --pprint > $@
 
+# this may take a while with these numbers
 scaling.data: main Makefile
 	./$< --scaling 10000 1000000 10000 > $@
 
