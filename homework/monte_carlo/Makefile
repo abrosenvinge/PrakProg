@@ -16,7 +16,7 @@ scaling.data: main Makefile
 	./$< --scaling 10000 1000000 10000 > $@
 
 scaling_plot.svg: scaling_plot.gp scaling.data
-	$(PLOT) $+
+	$(PLOT) $+ 2> fit.log
 
 main: $(objects)
 
