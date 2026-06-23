@@ -14,13 +14,15 @@ pp::Vector<double> make_linear_start_parameters(size_t n_hidden_neurons, double 
 	return p;
 }
 
-pp::Vector<double> make_damped_oscillator_start_parameters(size_t n_hidden_neurons,
+pp::Vector<double> make_gauss_oscillator_start_parameters(size_t n_hidden_neurons,
 		double a, double b) {
 	pp::Vector<double> p(3*n_hidden_neurons);
 	for (size_t i = 0; i < n_hidden_neurons; ++i) {
-		p[3*i] = a + ((b-a)*i)/(n_hidden_neurons-1.);
-		p[3*i+1] = 5. / n_hidden_neurons;
-		p[3*i+2] = 7. / n_hidden_neurons;
+		double ai = a + ((b-a)*i)/(n_hidden_neurons-1.);
+		p[3*i] = ai;
+		p[3*i+1] = 6. / n_hidden_neurons;
+		// p[3*i+2] = -20*(ai-0.2)*(ai-0.2) / n_hidden_neurons;
+		p[3*i+2] = 8. / n_hidden_neurons;
 	}
 	return p;
 }
@@ -57,7 +59,7 @@ void make_plot_data(size_t n,
 				ann.second_deriv(xi));
 	}
 
-	ann.train(x,y);
+	ann.train_lstsq(x,y);
 
 	std::cout << "\n\n";
 	for (double xi = a; xi <= b; xi += h) {
@@ -67,7 +69,8 @@ void make_plot_data(size_t n,
 				ann.deriv(xi),
 				ann.second_deriv(xi));
 	}
-
+	
+	std::cerr << ann.p;
 }
 
 int main(int argc, char** argv) {
@@ -86,8 +89,8 @@ int main(int argc, char** argv) {
 			auto ddf = [](double) {return 0.;};
 			make_plot_data(n, p0, a, b, f, F, df, ddf, 50, 1000);
 		}
-		else if (arg == "--damped_oscillation") {
-			pp::Vector<double> p0 = make_damped_oscillator_start_parameters(n,a,b);
+		else if (arg == "--gauss_oscillation") {
+			pp::Vector<double> p0 = make_gauss_oscillator_start_parameters(n,a,b);
 			auto f = [](double x) {return std::cos(5*x-1)*std::exp(-x*x);};
 			auto F = [](double) {return NAN;}; // I couldn't be bothered to calculate it
 			auto df = [](double x) {
@@ -99,6 +102,33 @@ int main(int argc, char** argv) {
 			make_plot_data(n, p0, a, b, f, F, df, ddf, 50, 1000);
 		}
 	}
+
+	// pp::Vector<double> p0 = make_gauss_oscillator_start_parameters(n,a,b);
+	//
+	// auto harm_oscillator_diff_eq = [](double ddy, double, double y, double) {
+	// 	return ddy + y;
+	// };
+	// double c = 0;
+	// double yc = 0;
+	// double dyc = 1;
+	// auto harm_oscillator_solution = [](double x) {
+	// 	return std::sin(x);
+	// };
+	//
+	// double h = (b-a)/100;
+	// pp::ann_Gaussian_wavelet ann(n, p0);
+	//
+	// ann.train_diffeq(harm_oscillator_diff_eq, a, b, c, yc, dyc, 1, 1);
+	//
+	// for (size_t i = 0; i < 100; ++i) {
+	// 	double xi = a + i*h;
+	// 	std::cout << std::format("{} {}\n", xi, harm_oscillator_solution(xi));
+	// }
+	// std::cout << "\n\n";
+	// for (size_t i = 0; i < 100; ++i) {
+	// 	double xi = a + i*h;
+	// 	std::cout << std::format("{} {}\n", xi, ann.response(xi));
+	// }
 
 	// std::cout << a.cost(x,y) << "\n\n";
 	// std::cout << a.p << "\n\n";

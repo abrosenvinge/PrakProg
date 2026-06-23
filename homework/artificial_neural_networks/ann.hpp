@@ -1,5 +1,6 @@
 #pragma once
 #include "../lib/matrix.hpp"
+#include <functional>
 
 namespace pp {
 	class ann {
@@ -28,6 +29,10 @@ namespace pp {
 
 		double cost(const std::vector<double>& x, 
 				const std::vector<double>& y);
+		
+		double cost(const std::vector<double>& x, 
+				const std::vector<double>& y,
+				const pp::Vector<double>& ptest);
 
 		// computes C = sum((Fp(xi)-yi)^2) and its gradient and hessian wrt. p 
 		// and stores the results in g and H. 
@@ -37,11 +42,29 @@ namespace pp {
 				Vector<double>& g,
 				Matrix<double>& H);
 
+		// given parameters ptest these give the responses using those parameters
+		double response(double x, const pp::Vector<double>& ptest);
+		double deriv(double x, const pp::Vector<double>& ptest);
+		double second_deriv(double x, const pp::Vector<double>& ptest);
+		double integral(double a, double b, const pp::Vector<double>& ptest);
+
+		// these give the response using the current parameters p
 		double response(double x);
 		double deriv(double x);
 		double second_deriv(double x);
 		double integral(double a, double b);
-		void train(const std::vector<double>& x, const std::vector<double>& y);
+		void train_lstsq(const std::vector<double>& x, const std::vector<double>& y);
+
+		// Trains the ann to approximate the solution, y(x), to the differential equation Phi(y'',y',y,x) = 0
+		// satisfying y(c) = yc and y'(c) = dyc on the interval [a,b]
+		void train_diffeq(const std::function<double(double, double, double, double)> Phi, 
+				double a, 
+				double b,
+				double c,
+				double yc,
+				double dyc,
+				double alpha,
+				double beta);
 	};
 
 	class ann_Gaussian_wavelet : public ann {

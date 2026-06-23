@@ -3,45 +3,51 @@
 #include <cmath>
 #include <numbers>
 #include "../linear_equations/qr.hpp"
+#include "../minimization/minimization.hpp"
+#include "../integration/integration.hpp"
 
 namespace pp {
-
-	double ann::response(double x) {
+	double ann::response(double x, const pp::Vector<double>& ptest) {
 		double out = 0;
 		for (size_t i = 0; i < n_hidden_neurons; ++i) {
-			double ai = p[3*i], bi = p[3*i+1], wi = p[3*i+2];
+			double ai = ptest[3*i], bi = ptest[3*i+1], wi = ptest[3*i+2];
 			out += activation((x-ai)/bi)*wi;
 		}
 		return out;
 	}
-	double ann::deriv(double x) {
+	double ann::response(double x) { return response(x,p); }
+
+	double ann::deriv(double x, const pp::Vector<double>& ptest) {
 		double out = 0;
 		for (size_t i = 0; i < n_hidden_neurons; ++i) {
-			double ai = p[3*i], bi = p[3*i+1], wi = p[3*i+2];
+			double ai = ptest[3*i], bi = ptest[3*i+1], wi = ptest[3*i+2];
 			out += activation_derivative((x-ai)/bi)*wi / bi;
 		}
 		return out;
 	}
+	double ann::deriv(double x) { return deriv(x,p); }
 
-	double ann::second_deriv(double x) {
+	double ann::second_deriv(double x, const pp::Vector<double>& ptest) {
 		double out = 0;
 		for (size_t i = 0; i < n_hidden_neurons; ++i) {
-			double ai = p[3*i], bi = p[3*i+1], wi = p[3*i+2];
+			double ai = ptest[3*i], bi = ptest[3*i+1], wi = ptest[3*i+2];
 			out += activation_2nd_derivative((x-ai)/bi)*wi / (bi*bi);
 		}
 		return out;
-	}
 
-	double ann::integral(double a, double b) {
+	}
+	double ann::second_deriv(double x) { return second_deriv(x,p); }
+
+	double ann::integral(double a, double b, const pp::Vector<double>& ptest) {
 		double out = 0;
 		for (size_t i = 0; i < n_hidden_neurons; ++i) {
-			double ai = p[3*i], bi = p[3*i+1], wi = p[3*i+2];
+			double ai = ptest[3*i], bi = ptest[3*i+1], wi = ptest[3*i+2];
 			out += (activation_anti_derivative((b-ai)/bi) - 
 					activation_anti_derivative((a-ai)/bi))*wi*bi;
 		}
 		return out;
-
 	}
+	double ann::integral(double a, double b) { return integral(a,b,p); }
 
 	void ann::gradient_p(double x, Vector<double>& out) {
 		for (size_t i = 0; i < n_hidden_neurons; ++i) {
@@ -69,20 +75,25 @@ namespace pp {
 
 			out[k+1,k+1] = 2*w*(x-a)*deriv / (b*b*b) + w*(x-a)*(x-a)*deriv2 / (b*b*b*b);
 
-			double bw = (x-a)*deriv/(b*b);
+			double bw = -(x-a)*deriv/(b*b);
 			out[k+1,k+2] = bw; out[k+2,k+1] = bw;
 
 			out[k+2,k+2] = 0.;
 		}
 	}
+	double ann::cost(const std::vector<double>& x, 
+			const std::vector<double>& y,
+			const pp::Vector<double>& ptest) {
+		double out = 0;
+		for (size_t i = 0; i < x.size(); ++i) {
+			out += std::pow(response(x[i],ptest) - y[i],2);
+		}
+		return out;
+	}
 
 	double ann::cost(const std::vector<double>& x, 
 			const std::vector<double>& y) {
-		double out = 0;
-		for (size_t i = 0; i < x.size(); ++i) {
-			out += std::pow(response(x[i]) - y[i],2);
-		}
-		return out;
+		return cost(x,y,p);
 	}
 
 	double ann::cost_grad_hess_C(const std::vector<double>& x, 
@@ -116,14 +127,14 @@ namespace pp {
 		return Cout;
 	}
 
-	void ann::train(const std::vector<double>& x, const std::vector<double>& y) {
+	void ann::train_lstsq(const std::vector<double>& x, const std::vector<double>& y) {
 		pp::Vector<double> g(p.size);
 		pp::Matrix<double> H(p.size,p.size);
 
 		double C = cost_grad_hess_C(x, y, g, H);
 
 		int iters = 0, max_iters = 10000;
-		double acc = 0.0000001, min_lambda = 0.00001;
+		double acc = 0.0001, min_lambda = 0.00001;
 
 		while (norm(g) >= acc && iters < max_iters) {
 			for (size_t i = 0; i < H.n_rows; ++i) H[i,i] += 1e-6;
@@ -146,6 +157,34 @@ namespace pp {
 
 			iters++;
 		}
+		// auto C = [this,&x, &y](const pp::Vector<double>& ptest) { return cost(x,y,ptest); };
+		// MinimizationResult min_res = min_newton(C, p);
+		// p = min_res.x;
+	}
+	// Trains the ann to approximate the solution, y(x), to the differential equation Phi(y'',y',y,x) = 0
+	// satisfying y(c) = yc and y'(c) = dyc on the interval [a,b]
+	void ann::train_diffeq(const std::function<double(double, double, double, double)> Phi, 
+			double a, 
+			double b,
+			double c,
+			double yc,
+			double dyc,
+			double alpha,
+			double beta) 
+	{
+		auto C = [this, a, b, c, yc, dyc, alpha, beta, &Phi](const pp::Vector<double>& ptest) {
+			auto integrand = [this, &ptest, &Phi](double x) {
+				double P = Phi(second_deriv(x,ptest), deriv(x,ptest), response(x,ptest), x);
+				return P*P;
+			};
+			auto [I,_] = integrate(integrand, a, b);
+			double yc_err = (response(c,ptest)-yc);
+			double dyc_err = (deriv(c,ptest)-dyc);
+			double boundary_term = alpha * yc_err * yc_err + beta * dyc_err * dyc_err;
+			return I + boundary_term;
+		};
+		MinimizationResult min_res = min_newton(C, p);
+		p = min_res.x;
 	}
 	
 	double ann_Gaussian_wavelet::activation(double x) {
