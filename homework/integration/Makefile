@@ -39,7 +39,7 @@ main: main.o integration.o
 
 main.o: main.cpp integration.hpp
 
-integration.o: integration.hpp
+integration.o: integration.hpp integration.cpp
 
 clean:
 	$(RM) main Out.txt $(objects) *.svg *.data
