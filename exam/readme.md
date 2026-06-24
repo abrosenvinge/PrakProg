@@ -59,8 +59,14 @@ where $\Delta x = x_{i+1}-x_i$ and $\Delta y = y_{j+1} - y_j$.
 ## Implementation
 The algorithm itself is implemented in [bilinear.hpp] and [bilinear.cpp] with the signature
 ```c++
-    double bilinear(const std::vector<double>& x, const std::vector<double>& y, const Matrix<double>& F, double px, double py);
+double bilinear(const std::vector<double>& x, const std::vector<double>& y, const Matrix<double>& F, double px, double py);
 ```
-where Matrix is implemented in [matrix.hpp] which is taken from the homework [../homework/lib/matrix.hpp].
+where Matrix is implemented in [matrix.hpp](matrix.hpp) which is taken from the homework [../homework/lib/matrix.hpp].
 
-The implementation finds the rectangle containing $(p_x, p_y)$ using two binary searches implemented in [splines.hpp] (symlink to [../homework/splines/splines.hpp]). Following this the coefficients are computed as described above and $B_{i,j}(p_x,p_y)$ is returned.
+The implementation finds the rectangle containing $(p_x, p_y)$ using two binary searches implemented in [splines.hpp] (symlink to [../homework/splines/splines.hpp]): 
+```c++
+size_t i = binary_search(x, px);
+size_t j = binary_search(y, py);
+```
+
+Following this the coefficients are computed as described above and $B_{i,j}(p_x,p_y)$ is returned.
