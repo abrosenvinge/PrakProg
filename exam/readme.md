@@ -70,3 +70,16 @@ size_t j = binary_search(y, py);
 ```
 
 Following this the coefficients are computed as described above and $B_{i,j}(p_x,p_y)$ is returned.
+```c++
+double dx = x[i+1] - x[i];
+double dy = y[j+1] - y[j];
+
+double a = F[i,j];
+double b = (F[i+1,j] - a)/dx;
+double c = (F[i,j+1] - a)/dy;
+double d = (F[i+1,j+1] - a - b*dx - c*dy) / (dx*dy);
+
+return a + b*(px-x[i]) + c*(py-y[j]) + d*(px-x[i])*(py-y[j]);
+```
+
+## Plots
