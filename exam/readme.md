@@ -42,15 +42,15 @@ B_{i,j}(x,y) = a_{i,j} + b_{i,j}(x-x_i) + c_{i,j}(y-y_i) + d_{i,j}(x-x_i)(y-y_i)
 ```
 In this case the above equations can be easily solved to give 
 ```math
-a = F_{i,j},
+a_{i,j} = F_{i,j},
 ```
 ```math
-b = \frac{F_{i+1,j} - a}{\Delta x},
+b_{i,j} = \frac{F_{i+1,j} - a}{\Delta x},
 ```
 ```math
-c = \frac{F_{i,j+1} - a}{\Delta y},
+c_{i,j} = \frac{F_{i,j+1} - a}{\Delta y},
 ```
 and
 ```math
-d = \frac{F_{i+1,j+1} - a - b\Delta x - c\Delta y}{\Delta x\Delta y}.
+d_{i,j} = \frac{F_{i+1,j+1} - a - b\Delta x - c\Delta y}{\Delta x\Delta y}.
 ```
