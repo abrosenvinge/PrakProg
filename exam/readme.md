@@ -61,9 +61,9 @@ The algorithm itself is implemented in [bilinear.hpp] and [bilinear.cpp] with th
 ```c++
 double bilinear(const std::vector<double>& x, const std::vector<double>& y, const Matrix<double>& F, double px, double py);
 ```
-where Matrix is implemented in [matrix.hpp](matrix.hpp) which is taken from the homework [../homework/lib/matrix.hpp].
+where Matrix is implemented in [matrix.hpp](../homework/lib/matrix.hpp) which is taken from the homework via symlink.
 
-The implementation finds the rectangle containing $(p_x, p_y)$ using two binary searches implemented in [splines.hpp] (symlink to [../homework/splines/splines.hpp]): 
+The implementation finds the rectangle containing $(p_x, p_y)$ using two binary searches implemented in [splines.hpp](../homework/splines/splines.hpp) (symlink to the splines homework): 
 ```c++
 size_t i = binary_search(x, px);
 size_t j = binary_search(y, py);
