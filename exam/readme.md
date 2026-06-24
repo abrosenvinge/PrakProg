@@ -10,7 +10,9 @@ See the chapter "Bi-linear interpolation" in the book.
 
 The signature of the interpolating subroutine can be
 
+```c++
 static double bilinear(double[] x, double[] y, matrix F, double px, double py)
+```
 
 # Solution
 
