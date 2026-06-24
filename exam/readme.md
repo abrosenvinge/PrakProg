@@ -52,5 +52,6 @@ c_{i,j} = \frac{F_{i,j+1} - a}{\Delta y},
 ```
 and
 ```math
-d_{i,j} = \frac{F_{i+1,j+1} - a - b\Delta x - c\Delta y}{\Delta x\Delta y}.
+d_{i,j} = \frac{F_{i+1,j+1} - a - b\Delta x - c\Delta y}{\Delta x\Delta y},
 ```
+where $\Delta x = x_{i+1}-x_i$ and $\Delta y = y_{j+1} - y_j$.
