@@ -26,14 +26,14 @@ such that it takes the correct values at the corners.
 B_{i,j}(x_i,y_j) = F_{i,j},
 ```
 ```math
-B_{i+1,j}(x_{i+1},y_j) = F_{i+1,j},
+B_{i,j}(x_{i+1},y_j) = F_{i+1,j},
 ```
 ```math
-B_{i,j+1}(x_{i},y_{j+1}) = F_{i,j+1},
+B_{i,j}(x_{i},y_{j+1}) = F_{i,j+1},
 ```
 and
 ```math
-B_{i+1,j+1}(x_{i+1},y_{j+1}) = F_{i+1,j+1}.
+B_{i,j}(x_{i+1},y_{j+1}) = F_{i+1,j+1}.
 ```
 
 It turns out however, that this is simpler to solve by redefining the coefficients such that 
