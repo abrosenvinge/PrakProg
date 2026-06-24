@@ -82,4 +82,4 @@ double d = (F[i+1,j+1] - a - b*dx - c*dy) / (dx*dy);
 return a + b*(px-x[i]) + c*(py-y[j]) + d*(px-x[i])*(py-y[j]);
 ```
 
-## Plots
+# Plots
