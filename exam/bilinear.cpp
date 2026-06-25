@@ -45,6 +45,10 @@ namespace pp {
 			const std::vector<double>& px,
 			const std::vector<double>& py) 
 	{
+		if (px[0] < x[0] || px.back() > x.back())
+			throw std::out_of_range(std::format("px interval ({},{}) not between first and last element of x ({}, {})", px[0],px.back(), x[0], x.back()));
+		if (py[0] < y[0] || py.back() > y.back())
+			throw std::out_of_range(std::format("py interval ({},{}) not between first and last element of y ({}, {})", py[0],py.back(), y[0], y.back()));
 		Matrix<double> out(px.size(), py.size());
 		size_t j = 0;
 		for (size_t pj = 0; pj < py.size(); ++pj) {
