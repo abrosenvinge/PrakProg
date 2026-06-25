@@ -10,7 +10,7 @@ objects = main.o bilinear.o
 # Out.txt: main
 # 	./$< --test > $@
 
-all: interp_plots timing_plot.svg
+all: interp_plots timing_plot.svg Out.txt
 
 interp_plots: saddle_plot.svg plane_plot.svg gauss_cos_plot.svg gauss_plot.svg wave_plot.svg
 
@@ -58,6 +58,14 @@ gauss_plot.svg: bilinear_plot.gp gauss.data
 
 gauss.data: main Makefile
 	./$< -n 100 -nx 15 -ny 15 --xbounds -5 5 --ybounds -5 5 -F gaussian --xspacing logarithmic --yspacing logarithmic --output > $@
+
+Out.txt: main
+	echo > $@
+	./$< -n 100 -nx 10 -ny 5 --xbounds -1 1 --ybounds -1 1 -F plane --test >> $@
+	./$< -n 100 -nx 10 -ny 10 --xbounds -2 2 --ybounds -1 1 -F saddle --test >> $@
+	./$< -n 100 -nx 15 -ny 15 --xbounds -5 5 --ybounds -5 5 -F gaussian --xspacing logarithmic --yspacing logarithmic --test >> $@
+	./$< -n 200 -nx 20 -ny 30 --xbounds -2 2 --ybounds -1 1 -F gauss_cos --test >> $@
+	./$< -n 200 -nx 40 -ny 40 --xbounds -20 20 --ybounds -20 20 -F wave --test >> $@
 
 main: $(objects)
 

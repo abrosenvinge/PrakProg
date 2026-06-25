@@ -141,4 +141,9 @@ F(x,y) = y-x
 ```math
 F(x,y) = \exp\left(-x^2\right) \cos(5y)
 ```
+which can be seen in [plane_plot.svg](./plane_plot.svg) and [gauss_cos_plot](./gauss_cos_plot.svg) respectively.
 
+The timing of the two methods can be seen in [timing_plot.svg](./timing_plot.svg). Here it is clearly seen that the grid version is around twice as fast. Note that in both cases a matrix to store the output is allocated which is in principle unnecessary for the method from part a.
+
+#### Test
+Finally, we test that the two methods produce the same results which can be seen in [Out.txt](./Out.txt). They do.

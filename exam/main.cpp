@@ -63,6 +63,8 @@ int main(int argc, char** argv) {
 	std::string xspacing = "regular", yspacing = "regular", // how the sample grid points should be distributed along each axis ("regular" or "logarithmic")
 		mode = "normal"; // whether to use the normal interpolation or the one intended for grid evaluation
 	bool output = true; // whether to output data for plotting
+	bool test = false; // whether to test the two methods against eachother
+	std::string fname = "plane";
 	
 	for (int i = 0; i < argc; ++i) {
 		std::string arg = argv[i];
@@ -80,7 +82,7 @@ int main(int argc, char** argv) {
 			i += 2;
 		}
 		else if (arg == "-F" && ++i < argc) {
-			std::string fname = argv[i];
+			fname = argv[i];
 			if (fname == "plane") f = [](double x, double y) { return -x+y; };
 			else if (fname == "saddle") f = [](double x, double y) { return x*y; };
 			else if (fname == "gaussian") 
@@ -94,6 +96,7 @@ int main(int argc, char** argv) {
 		else if (arg == "--yspacing" && ++i < argc) yspacing = argv[i];
 		else if (arg == "--output") output = true; 
 		else if (arg == "--nooutput") output = false; 
+		else if (arg == "--test") test = true; 
 		else if (arg == "--mode" && ++i < argc) mode = argv[i];
 	}
 
@@ -109,23 +112,38 @@ int main(int argc, char** argv) {
 	std::vector<double> xint = make_regular_grid_axis(ax,bx,n), 
 						yint = make_regular_grid_axis(ay,by,n);
 
-	pp::Matrix<double> Fint;
-	if (mode == "normal") {
-		Fint = pp::Matrix<double>(n,n);
-		for (size_t j = 0; j < n; ++j) {
-			for (size_t i = 0; i < n; ++i) {
-				Fint[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+	if (!test) {
+		pp::Matrix<double> Fint;
+		if (mode == "normal") {
+			Fint = pp::Matrix<double>(n,n);
+			for (size_t j = 0; j < n; ++j) {
+				for (size_t i = 0; i < n; ++i) {
+					Fint[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+				}
 			}
 		}
+		else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
+
+
+		if (output) {
+			print_nonuniform_matrix(x,y,F);
+			std::cout << "\n\n";
+			print_nonuniform_matrix(xint, yint, Fint);
+			std::cout << "\n\n";
+			print_nonuniform_matrix(xint, yint, evaluate_on_grid(f,xint,yint));
+		}
 	}
-	else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
-
-
-	if (output) {
-		print_nonuniform_matrix(x,y,F);
-		std::cout << "\n\n";
-		print_nonuniform_matrix(xint, yint, Fint);
-		std::cout << "\n\n";
-		print_nonuniform_matrix(xint, yint, evaluate_on_grid(f,xint,yint));
+	else {
+		pp::Matrix<double> Fnorm(n,n);
+		Fnorm = pp::Matrix<double>(n,n);
+		for (size_t j = 0; j < n; ++j) {
+			for (size_t i = 0; i < n; ++i) {
+				Fnorm[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+			}
+		}
+		pp::Matrix<double> Fgrid = pp::bilinear(x,y,F,xint,yint);
+		bool equal = pp::mat_approx(Fnorm, Fgrid);
+		std::cout << std::format("Test for function {}: {}\n", fname, 
+				equal ? "Results are equal" : "Results are not equal");
 	}
 }

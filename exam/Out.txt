@@ -1,0 +1,6 @@
+
+Test for function plane: Results are equal
+Test for function saddle: Results are equal
+Test for function gaussian: Results are equal
+Test for function gauss_cos: Results are equal
+Test for function wave: Results are equal
