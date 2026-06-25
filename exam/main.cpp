@@ -87,6 +87,8 @@ int main(int argc, char** argv) {
 				f = [](double x, double y) { x += 3; y += 3; return std::exp(-x*x/8 - y*y/8); };
 			else if (fname == "gauss_cos") 
 				f = [](double x, double y) { return std::exp(-x*x) * std::cos(5*y); };
+			else if (fname == "wave")
+				f = [](double x, double y) { return std::exp(-std::sqrt(x*x+y*y)/4)*std::cos(std::sqrt(x*x+y*y)); };
 		}
 		else if (arg == "--xspacing" && ++i < argc) xspacing = argv[i];
 		else if (arg == "--yspacing" && ++i < argc) yspacing = argv[i];
@@ -123,5 +125,7 @@ int main(int argc, char** argv) {
 		print_nonuniform_matrix(x,y,F);
 		std::cout << "\n\n";
 		print_nonuniform_matrix(xint, yint, Fint);
+		std::cout << "\n\n";
+		print_nonuniform_matrix(xint, yint, evaluate_on_grid(f,xint,yint));
 	}
 }

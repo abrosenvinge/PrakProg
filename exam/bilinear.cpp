@@ -12,7 +12,7 @@ namespace pp {
 			double px,
 			double py,
 			size_t i,
-			size_t j) 
+			size_t j)
 	{
 		double dx = x[i+1] - x[i];
 		double dy = y[j+1] - y[j];

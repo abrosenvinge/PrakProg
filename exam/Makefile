@@ -10,9 +10,9 @@ objects = main.o bilinear.o
 # Out.txt: main
 # 	./$< --test > $@
 
-all: interp_plots.svg timing_plot.svg
+all: interp_plots timing_plot.svg
 
-interp_plots: saddle_plot.svg plane_plot.svg gauss_cos_plot.svg gauss_plot.svg
+interp_plots: saddle_plot.svg plane_plot.svg gauss_cos_plot.svg gauss_plot.svg wave_plot.svg
 
 timing_plot.svg: timing_plot.gp timing.data
 	$(PLOT) $+
@@ -20,7 +20,8 @@ timing_plot.svg: timing_plot.gp timing.data
 timing.data: main Makefile
 	>$@
 	# note that time outputs to stderr so redirect it to stdout with 2>&1
-	for i in $$(seq 100 200 2500); do \
+	for i in $$(seq 100 400 5000); do \
+		echo $$i;\
 		echo\
 			$$i \
 			$$($(TIME) --format "%e" ./$< -n $$i -nx 20 -ny 20 --xbounds -1 1 --ybounds -1 1 -F saddle --nooutput --mode normal 2>&1) \
@@ -28,11 +29,17 @@ timing.data: main Makefile
 		>> $@ \
 	; done
 
+wave_plot.svg: bilinear_plot.gp wave.data
+	$(PLOT) $+
+
+wave.data: main Makefile
+	./$< -n 200 -nx 40 -ny 40 --xbounds -20 20 --ybounds -20 20 -F wave --output > $@
+
 gauss_cos_plot.svg: bilinear_plot.gp gauss_cos.data
 	$(PLOT) $+
 
 gauss_cos.data: main Makefile
-	./$< -n 200 -nx 20 -ny 30 --xbounds -2 2 --ybounds -1 1 -F gauss_cos --output > $@
+	./$< -n 200 -nx 20 -ny 30 --xbounds -2 2 --ybounds -1 1 -F gauss_cos --output --mode grid > $@
 
 saddle_plot.svg: bilinear_plot.gp saddle.data
 	$(PLOT) $+
@@ -44,13 +51,13 @@ plane_plot.svg: bilinear_plot.gp plane.data
 	$(PLOT) $+
 
 plane.data: main Makefile
-	./$< -n 100 -nx 10 -ny 5 --xbounds -1 1 --ybounds -1 1 -F plane --output > $@
+	./$< -n 100 -nx 10 -ny 5 --xbounds -1 1 --ybounds -1 1 -F plane --output --mode grid > $@
 
 gauss_plot.svg: bilinear_plot.gp gauss.data
 	$(PLOT) $+
 
 gauss.data: main Makefile
-	./$< -n 100 -nx 15 -ny 15 --xbounds -5 5 --ybounds -5 5 -F gaussian --xspacing logarithmic --yspacing logarithmic --output --mode grid > $@
+	./$< -n 100 -nx 15 -ny 15 --xbounds -5 5 --ybounds -5 5 -F gaussian --xspacing logarithmic --yspacing logarithmic --output > $@
 
 main: $(objects)
 
