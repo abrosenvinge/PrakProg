@@ -18,9 +18,10 @@ std::vector<double> make_logarithmic_grid_axis(double a, double b, size_t n) {
 
 	double c = std::pow(b-a+1,1./(n-1));
 
-	for (size_t i = 0; i < n; ++i) {
+	for (size_t i = 0; i < n-1; ++i) {
 		x[i] = a + std::pow(c,i) - 1;
 	}
+	x[x.size()-1] = b; // otherwise the grid may not contain b due to rounding errors
 	return x;
 }
 
@@ -42,12 +43,12 @@ void print_nonuniform_matrix(
 {
 	size_t ny = y.size(), nx = x.size();
 	std::cout << ny << " ";
-	for (size_t j = 0; j < ny; ++j) std::cout << y[j] << " ";
+	for (size_t i = 0; i < nx; ++i) std::cout << x[i] << " ";
 	std::cout << "\n";
 
-	for (size_t i = 0; i < nx; ++i) {
-		std::cout << x[i] << " ";
-		for (size_t j = 0; j < ny; ++j) {
+	for (size_t j = 0; j < ny; ++j) {
+		std::cout << y[j] << " ";
+		for (size_t i = 0; i < nx; ++i) {
 			std::cout << F[i,j] << " ";
 		}
 		std::cout << "\n";
@@ -58,7 +59,10 @@ int main(int argc, char** argv) {
 	double ax = -1, bx = 1, ay = -1, by = 1; // bounds for the grid
 	size_t nx = 10, ny = 5; // number of grid points along each axis
 	size_t n = 100; // number of grid points along each axis to interpolate
-	std::function<double(double,double)> f = [](double x, double y) { return x*y; };
+	std::function<double(double,double)> f = [](double x, double y) { return x*y; }; // function to interpolate
+	std::string xspacing = "regular", yspacing = "regular", // how the sample grid points should be distributed along each axis ("regular" or "logarithmic")
+		mode = "normal"; // whether to use the normal interpolation or the one intended for grid evaluation
+	bool output = true; // whether to output data for plotting
 	
 	for (int i = 0; i < argc; ++i) {
 		std::string arg = argv[i];
@@ -77,25 +81,47 @@ int main(int argc, char** argv) {
 		}
 		else if (arg == "-F" && ++i < argc) {
 			std::string fname = argv[i];
-			if (fname == "plane") f = [](double x, double y) { return x+y; };
+			if (fname == "plane") f = [](double x, double y) { return -x+y; };
 			else if (fname == "saddle") f = [](double x, double y) { return x*y; };
 			else if (fname == "gaussian") 
 				f = [](double x, double y) { x += 3; y += 3; return std::exp(-x*x/8 - y*y/8); };
+			else if (fname == "gauss_cos") 
+				f = [](double x, double y) { return std::exp(-x*x) * std::cos(5*y); };
 		}
+		else if (arg == "--xspacing" && ++i < argc) xspacing = argv[i];
+		else if (arg == "--yspacing" && ++i < argc) yspacing = argv[i];
+		else if (arg == "--output") output = true; 
+		else if (arg == "--nooutput") output = false; 
+		else if (arg == "--mode" && ++i < argc) mode = argv[i];
 	}
 
-	std::vector<double> x = make_logarithmic_grid_axis(ax,bx,nx), 
-						y = make_logarithmic_grid_axis(ay,by,ny);
-	pp::Matrix<double> F = evaluate_on_grid(f, x,y);
+	std::vector<double> x,y;
+	if (xspacing == "regular") x = make_regular_grid_axis(ax,bx,nx);
+	else if (xspacing == "logarithmic") x = make_logarithmic_grid_axis(ax,bx,nx); 
 
-	print_nonuniform_matrix(x,y,F);
+	if (yspacing == "regular") y = make_regular_grid_axis(ay,by,ny);
+	else if (yspacing == "logarithmic") y = make_logarithmic_grid_axis(ay,by,ny); 
 
-	std::cout << "\n\n";
+	pp::Matrix<double> F = evaluate_on_grid(f,x,y);
 
 	std::vector<double> xint = make_regular_grid_axis(ax,bx,n), 
 						yint = make_regular_grid_axis(ay,by,n);
 
-	pp::Matrix<double> Fint = evaluate_on_grid([&x,&y,&F](double px, double py){return pp::bilinear(x,y,F,px,py);}, xint, yint);
-	print_nonuniform_matrix(xint, yint, Fint);
+	pp::Matrix<double> Fint;
+	if (mode == "normal") {
+		Fint = pp::Matrix<double>(n,n);
+		for (size_t j = 0; j < n; ++j) {
+			for (size_t i = 0; i < n; ++i) {
+				Fint[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+			}
+		}
+	}
+	else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
 
+
+	if (output) {
+		print_nonuniform_matrix(x,y,F);
+		std::cout << "\n\n";
+		print_nonuniform_matrix(xint, yint, Fint);
+	}
 }
