@@ -101,9 +101,13 @@ double bilinear(const std::vector<double>& x,
 #### Plots
 To test the implementation we interpolate the following functions
 ```math
-    F(x,y) = x*y\\
-    F(x,y) = \exp(-\frac{(x+3)^2 + (y+3)^2}{8})\\
-    F(x,y) = \exp(-\sqrt(x^2 + y^2)/4) \cos(\sqrt(x^2 + y^2))
+F(x,y) = x*y
+```
+```math
+F(x,y) = \exp(-\frac{(x+3)^2 + (y+3)^2}{8})
+```
+```math
+F(x,y) = \exp(-\sqrt(x^2 + y^2)/4) \cos(\sqrt(x^2 + y^2))
 ```
 which can be seen in [saddle_plot.svg](./saddle_plot.svg), [gauss_plot.svg](./gauss_plot.svg), and [wave_plot.svg](./wave_plot.svg) respectively. Notice that the interpolation is exact for the first of these. It does reasonably well approximating the gaussian as well but struggles with the oscillations of the third function. Notice also that the sample grid in the second case is not regular, to show that the algorithm works on any rectilinear grid.
 
