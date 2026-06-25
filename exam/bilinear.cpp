@@ -32,7 +32,7 @@ namespace pp {
 			double py)
 	{
 		if (px < x[0] || px > x.back()) throw std::out_of_range(std::format("px = {} not between first and last element of x ({}, {})", px, x[0], x.back()));
-		if (py < y[0] || py > y.back()) throw std::out_of_range("px not between first and last element of x");
+		if (py < y[0] || py > y.back()) throw std::out_of_range(std::format("py = {} not between first and last element of y ({}, {})", py, y[0], y.back()));
 		size_t i = binary_search(x, px);
 		size_t j = binary_search(y, py);
 		
