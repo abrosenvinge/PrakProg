@@ -98,4 +98,26 @@ double bilinear(const std::vector<double>& x,
 }
 ```
 
-# Plots
+### b
+This algorithm is also implemented in [bilinear.hpp] and [bilinear.cpp] with the signature 
+```c++
+double bilinear(const std::vector<double>& x,
+    const std::vector<double>& y,
+    const Matrix<double>& F,
+    const std::vector<double>& px, 
+    const std::vector<double>& py);
+```
+where px and py now describe the grid to evaluate the interpolation on. It is then possible to loop through the points in py and px. We always keep track of the rectangle i,j that contained the previous point, because the next must have $i_{next} \geq i$ and $j_{next} \geq j$. Therefore, we simply increase i and j until the next point is contained in the rectangle:
+```c++
+size_t j = 0;
+for (size_t pj = 0; pj < py.size(); ++pj) {
+    double pyj = py[pj];
+    while (pyj > y[j+1]) j++;
+    size_t i = 0;
+    for (size_t pi = 0; pi < px.size(); ++pi) {
+        double pxi = px[pi];
+        while (pxi > x[i+1]) i++;
+        ...
+```
+
+## Plots
