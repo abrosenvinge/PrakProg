@@ -4,18 +4,24 @@
 ## Introduction
 A rectilinear grid (note that rectilinear is not necessarily cartesian nor regular) in two dimensions is a set of $n_x\times n_y$ points where each point can be adressed by a double index $(i,j)$ where $1 \leq i \leq n_x$, $1 \leq j \leq n_y$ and the coordinates of the point $(i,j)$ are given as $(x_i,y_j)$, where $x$ and $y$ are vectors with sizes $n_x$ and $n_y$ correspondingly. The values of the tabulated function $F$ at the grid points can then be arranged as a matrix $\{F_i, j=F(x_i,y_j)\}$. 
 ## Problem
+### a
 Build an interpolating routine which takes as the input the vectors $\{x_i\}$ and $\{y_j\}$, and the matrix $\{F_{i,j}\}$ and returns the bi-linear interpolated value of the function at a given 2D-point $p=(p_x,p_y)$. 
-## Hints
+#### Hints
 See the chapter "Bi-linear interpolation" in the book.
 
 The signature of the interpolating subroutine can be
-
 ```c++
 static double bilinear(double[] x, double[] y, matrix F, double px, double py)
 ```
 
-# Solution
+### b
+It is sometimes useful to evaluate the interpolation at every point on a denser grid given by two vectors $x'$ and $y'$ (for instance for plotting). Because the above function takes only a single point at a time, it is necessary to perform two binary searches for each point. Evaluation on an $N\times N$ grid is therefore $O(N^2 log(N))$.
 
+These binary searches are unnecessary however, because the grid points $x'$ and $y'$ are sorted. Therefore, it is possible to evaluate the interpolation on a grid in $O(N^2)$.
+
+Implement this and plot the time taken for the two methods as a function of $N$.
+
+# Solution
 ## Mathematical solution
 To interpolate $F$ inside the rectangle with corners $(x_i,y_j)$, $(x_{i+1},y_j)$, $(x_i,y_{j+1})$, $(x_{i+1},y_{i+1})$ we must, according to the book, determine the coefficient in the bilinear function 
 ```math
@@ -57,6 +63,7 @@ d_{i,j} = \frac{F_{i+1,j+1} - a - b\Delta x - c\Delta y}{\Delta x\Delta y},
 where $\Delta x = x_{i+1}-x_i$ and $\Delta y = y_{j+1} - y_j$.
 
 ## Implementation
+### a
 The algorithm itself is implemented in [bilinear.hpp] and [bilinear.cpp] with the signature
 ```c++
 double bilinear(const std::vector<double>& x, const std::vector<double>& y, const Matrix<double>& F, double px, double py);
