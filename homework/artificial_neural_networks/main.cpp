@@ -70,7 +70,41 @@ void make_plot_data(size_t n,
 				ann.second_deriv(xi));
 	}
 	
-	std::cerr << ann.p;
+	// std::cerr << ann.p;
+}
+
+void diff_eq_plot_data(std::function<double(double,double,double,double)> Phi,
+		std::function<double(double)> y,
+		double a,
+		double b,
+		double c,
+		double yc,
+		double dyc,
+		const pp::Vector<double>& p0,
+		size_t n,
+		size_t n_plot_points)
+{
+
+	double h = (b-a)/n_plot_points;
+	pp::ann_Gaussian_wavelet ann(n, p0);
+
+	for (size_t i = 0; i < n_plot_points; ++i) {
+		double xi = a + i*h;
+		std::cout << std::format("{} {}\n", xi, ann.response(xi));
+	}
+	std::cout << "\n\n";
+
+	ann.train_diffeq(Phi, a, b, c, yc, dyc, 1, 1);
+
+	for (size_t i = 0; i < n_plot_points; ++i) {
+		double xi = a + i*h;
+		std::cout << std::format("{} {}\n", xi, y(xi));
+	}
+	std::cout << "\n\n";
+	for (size_t i = 0; i < n_plot_points; ++i) {
+		double xi = a + i*h;
+		std::cout << std::format("{} {}\n", xi, ann.response(xi));
+	}
 }
 
 int main(int argc, char** argv) {
@@ -101,34 +135,22 @@ int main(int argc, char** argv) {
 			};
 			make_plot_data(n, p0, a, b, f, F, df, ddf, 50, 1000);
 		}
+		else if (arg == "--harm_oscillator_diff_eq") {
+			pp::Vector<double> p0 = make_gauss_oscillator_start_parameters(n,a,b);
+
+			auto harm_oscillator_diff_eq = [](double ddy, double, double y, double) {
+				return ddy + y;
+			};
+			double c = 0;
+			double yc = 0;
+			double dyc = 1;
+			auto harm_oscillator_solution = [](double x) {
+				return std::sin(x);
+			};
+			diff_eq_plot_data(harm_oscillator_diff_eq, harm_oscillator_solution, a, b, c, yc, dyc, p0, n, 1000);
+		}
 	}
 
-	// pp::Vector<double> p0 = make_gauss_oscillator_start_parameters(n,a,b);
-	//
-	// auto harm_oscillator_diff_eq = [](double ddy, double, double y, double) {
-	// 	return ddy + y;
-	// };
-	// double c = 0;
-	// double yc = 0;
-	// double dyc = 1;
-	// auto harm_oscillator_solution = [](double x) {
-	// 	return std::sin(x);
-	// };
-	//
-	// double h = (b-a)/100;
-	// pp::ann_Gaussian_wavelet ann(n, p0);
-	//
-	// ann.train_diffeq(harm_oscillator_diff_eq, a, b, c, yc, dyc, 1, 1);
-	//
-	// for (size_t i = 0; i < 100; ++i) {
-	// 	double xi = a + i*h;
-	// 	std::cout << std::format("{} {}\n", xi, harm_oscillator_solution(xi));
-	// }
-	// std::cout << "\n\n";
-	// for (size_t i = 0; i < 100; ++i) {
-	// 	double xi = a + i*h;
-	// 	std::cout << std::format("{} {}\n", xi, ann.response(xi));
-	// }
 
 	// std::cout << a.cost(x,y) << "\n\n";
 	// std::cout << a.p << "\n\n";

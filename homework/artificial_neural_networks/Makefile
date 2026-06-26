@@ -7,7 +7,13 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o ann.o ../minimization/minimization.o ../integration/integration.o
 
-all: linear_plot.svg gauss_oscillation_plot.svg
+all: linear_plot.svg gauss_oscillation_plot.svg harm_oscillator_plot.svg
+
+harm_oscillator_plot.svg: diff_eq_plot.gp harm_oscillator.data
+	$(PLOT) $+
+
+harm_oscillator.data: main Makefile
+	./$< -n 5 -a 0 -b 3.1415 --harm_oscillator_diff_eq > $@
 
 gauss_oscillation_plot.svg: ann_plot.gp gauss_oscillation.data
 	$(PLOT) $+
@@ -39,4 +45,4 @@ ann.o: ann.cpp ann.hpp ../lib/matrix.hpp
 ../integration/integration.o: ../integration/integration.hpp ../integration/integration.cpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.svg *.data
+	$(RM) main Out.txt $(objects) *.svg *.data test.o

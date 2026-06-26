@@ -161,6 +161,7 @@ namespace pp {
 		// MinimizationResult min_res = min_newton(C, p);
 		// p = min_res.x;
 	}
+
 	// Trains the ann to approximate the solution, y(x), to the differential equation Phi(y'',y',y,x) = 0
 	// satisfying y(c) = yc and y'(c) = dyc on the interval [a,b]
 	void ann::train_diffeq(const std::function<double(double, double, double, double)> Phi, 
@@ -183,7 +184,7 @@ namespace pp {
 			double boundary_term = alpha * yc_err * yc_err + beta * dyc_err * dyc_err;
 			return I + boundary_term;
 		};
-		MinimizationResult min_res = min_newton(C, p);
+		MinimizationResult min_res = min_newton(C, p, 0.001, 0.001, 1000);
 		p = min_res.x;
 	}
 	
