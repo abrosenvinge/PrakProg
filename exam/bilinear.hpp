@@ -25,4 +25,17 @@ namespace pp {
 			const Matrix<double>& F,
 			const std::vector<double>& px,
 			const std::vector<double>& py);
+
+	double integrate_bilinear(const std::vector<double>& x, 
+			const std::vector<double>& y,
+			const Matrix<double>& F,
+			double ax, double bx,
+			double ay, double by);
+
+	double integrate_bilinear_rectangle(const std::vector<double>& x, 
+			const std::vector<double>& y,
+			const Matrix<double>& F,
+			double ax, double bx,
+			double ay, double by,
+			size_t i, size_t j);
 }

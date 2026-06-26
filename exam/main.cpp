@@ -124,7 +124,6 @@ int main(int argc, char** argv) {
 		}
 		else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
 
-
 		if (output) {
 			print_nonuniform_matrix(x,y,F);
 			std::cout << "\n\n";
@@ -134,16 +133,19 @@ int main(int argc, char** argv) {
 		}
 	}
 	else {
-		pp::Matrix<double> Fnorm(n,n);
-		Fnorm = pp::Matrix<double>(n,n);
-		for (size_t j = 0; j < n; ++j) {
-			for (size_t i = 0; i < n; ++i) {
-				Fnorm[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
-			}
-		}
-		pp::Matrix<double> Fgrid = pp::bilinear(x,y,F,xint,yint);
-		bool equal = pp::mat_approx(Fnorm, Fgrid);
-		std::cout << std::format("Test for function {}: {}\n", fname, 
-				equal ? "Results are equal" : "Results are not equal");
+		// pp::Matrix<double> Fnorm(n,n);
+		// Fnorm = pp::Matrix<double>(n,n);
+		// for (size_t j = 0; j < n; ++j) {
+		// 	for (size_t i = 0; i < n; ++i) {
+		// 		Fnorm[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+		// 	}
+		// }
+		// pp::Matrix<double> Fgrid = pp::bilinear(x,y,F,xint,yint);
+		// bool equal = pp::mat_approx(Fnorm, Fgrid);
+		// std::cout << std::format("Test for function {}: {}\n", fname, 
+		// 		equal ? "Results are equal" : "Results are not equal");
+
+		double I = pp::integrate_bilinear(x, y, F, -1, 1, -1, 1);
+		std::cout << I;
 	}
 }
