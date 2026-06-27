@@ -7,9 +7,9 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o test.o
 
-all: wavefunc_plot.png rmax_plot.png dr_plot.png Out.txt
+all: wavefunc_plot.svg rmax_plot.svg dr_plot.svg timing_plot.svg Out.txt
 
-timing_plot.png: timing_plot.gp timing_plot.data
+timing_plot.svg: timing_plot.gp timing_plot.data
 	$(PLOT) $+
 
 timing_plot.data: main Makefile
@@ -23,13 +23,13 @@ timing_plot.data: main Makefile
 		>> $@ \
 	; done
 
-wavefunc_plot.png: wavefunc_plot.gp wavefunc_plot.data
+wavefunc_plot.svg: wavefunc_plot.gp wavefunc_plot.data
 	$(PLOT) $+
 
 wavefunc_plot.data: main Makefile
-	./$< --dr 0.05 --rmax 10 --nwavefuncs 5 > $@
+	./$< --dr 0.05 --rmax 10 --nwavefuncs 4 > $@
 
-rmax_plot.png: rmax_plot.gp rmax_plot.data
+rmax_plot.svg: rmax_plot.gp rmax_plot.data
 	$(PLOT) $+
 
 rmax_plot.data: main Makefile
@@ -39,7 +39,7 @@ rmax_plot.data: main Makefile
 		./$< --rmax $$i --dr 0.1 --e0 >> $@ \
 	; done
 
-dr_plot.png: dr_plot.gp dr_plot.data
+dr_plot.svg: dr_plot.gp dr_plot.data
 	$(PLOT) $+
 
 dr_plot.data: main Makefile
@@ -49,11 +49,11 @@ dr_plot.data: main Makefile
 	; done
 
 Out.txt: main
-	./$< --test
+	./$< --test > $@
 
 main: main.o
 
 main.o: main.cpp evd.hpp ../lib/matrix.hpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.data *.png
+	$(RM) main Out.txt $(objects) *.data *.svg

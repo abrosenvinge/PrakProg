@@ -6,9 +6,8 @@ void test(size_t N) {
 	pp::RandomMatrixGenerator RG(-1000., 1000.);
 
 	pp::Matrix<double> A = RG.create_symmetric(N);
-	std::cout << A << "\n\n";
 
-	pp::EVD evdA(A, true);
+	pp::EVD evdA(A, false);
 
 	pp::Matrix<double> D(N,N);
 	for (size_t i = 0; i < N; ++i) D[i,i] = evdA.w[i];
@@ -18,8 +17,14 @@ void test(size_t N) {
 	std::cout << "w =\n" << evdA.w << "\n\n";
 
 	std::cout << "Vt A V =\n" << evdA.V.T() * A * evdA.V << "\n\n";
+	std::cout << std::format("Vt A V equals D: {}\n\n", pp::mat_approx(evdA.V.T() * A * evdA.V, D, 0.0001, 0.0001));
 	std::cout << "V D Vt =\n" << evdA.V * D * evdA.V.T() << "\n\n";
+	std::cout << std::format("V D Vt equals A: {}\n\n", pp::mat_approx(evdA.V * D * evdA.V.T(), A, 0.00001, 0.00001));
 	std::cout << "V Vt =\n" << evdA.V * evdA.V.T() << "\n\n";
+	std::cout << "Vt V =\n" << evdA.V.T() * evdA.V << "\n\n";
+
+	pp::EVD evdA_opt(A,true);
+	std::cout << std::format("Optimized version gives same result: {}\n\n\n", pp::mat_approx(evdA.V, evdA_opt.V) && pp::mat_approx(evdA.w, evdA_opt.w));
 }
 
 int main(int argc, char** argv) {
@@ -68,14 +73,14 @@ int main(int argc, char** argv) {
 
 	// std::cout << "H =\n" << H << "\n\n";
 	// std::cout << "V =\n" << evd.V << "\n\n";
-	// std::cout << "w =\n" << evd.w << "\n\n";
+	// std::cerr << "Hydrogen eigenvalues:\n";
+	// std::cerr << "w =\n" << evd.w << "\n\n";
 
 	if (e0_output) std::cout << dr << " " << rmax << " " << evd.w[0] << "\n";
 
-	double inverse_sqrt_dr = 1/std::sqrt(dr);
 	for (size_t j = 0; j < n_wavefuncs; ++j) {
 		for (size_t i = 0; i < n; ++i) {
-			std::cout << r[i] << " " << inverse_sqrt_dr * evd.V[i,j] << "\n";
+			std::cout << r[i] << " " << evd.V[i,j]/std::sqrt(dr) << "\n";
 		}
 		std::cout << "\n\n";
 	}

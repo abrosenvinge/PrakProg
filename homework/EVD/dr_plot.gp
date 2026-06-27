@@ -1,6 +1,6 @@
 data = ARG1
 
-set terminal png size 1920,1080
+set terminal svg size 800,800
 
 set xlabel "dr"
 set ylabel "E_0"
