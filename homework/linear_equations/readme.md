@@ -7,6 +7,9 @@ and cleaned using
 ```sh
 make clean
 ```
+## Requirements
+- ```gnuplot``` 
+- ```GNU time``` available at ```/usr/bin/time```
 
 ## a
 Matrix and Vector are implemented in [../lib/matrix.hpp](../lib/matrix.hpp).
