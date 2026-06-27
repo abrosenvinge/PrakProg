@@ -3,12 +3,14 @@ CXXFLAGS = -std=c++23 -O -Wall -Wextra -O
 LDLIBS += -lstdc++ -lm
 TIME = /usr/bin/time
 
+PLOT = gnuplot -e "set output \"$@\"" -c
+
 objects = main.o test.o
 
-all: plot.png Out.txt test.log
+all: plot.svg Out.txt test.log
 
-plot.png: plot.gp out.times.data
-	gnuplot -e "OUTFILE = '$@'; INFILE = 'out.times.data'" $< 2> plot.log
+plot.svg: plot.gp out.times.data
+	$(PLOT) $+ 2> plot.log
 
 Out.txt: main
 	./$< -M 8 -N 5 > $@
@@ -33,4 +35,4 @@ test: test.o
 test.o: test.cpp qr.hpp ../lib/matrix.hpp
 
 clean:
-	$(RM) main Out.txt $(objects) test.log out.times.data plot.png
+	$(RM) main Out.txt $(objects) test.log log.main *.data *.svg

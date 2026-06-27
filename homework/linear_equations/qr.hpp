@@ -51,6 +51,7 @@ namespace pp {
 			}
 			return result;
 		}
+
 		Matrix<T> inverse() {
 			if (!Q.is_square()) throw std::invalid_argument("Non-square matrix is not invertible");
 			Matrix<T> out = Q.T_copy();

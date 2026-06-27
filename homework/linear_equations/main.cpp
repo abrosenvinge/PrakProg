@@ -25,20 +25,27 @@ int main(int argc, char** argv) {
 	pp::Vector<double> b = A * correctx; // ensures that Ax = b has solution
 
 	std::cout << "A =\n" << A << "\n\n";
+	std::cout << "QR decomposition:\n";
 	std::cout << "R =\n" << qr.R << "\n\n";
 	std::cout << "Q =\n" << qr.Q << "\n\n";
-	std::cout << "QR =\n" << qr.Q * qr.R << "\n\n";
 	std::cout << "Q.T Q =\n" << qr.Q.T() * qr.Q << "\n\n";
+	std::cout << "QR =\n" << qr.Q * qr.R << "\n\n";
+	std::cout << std::format("QR is equal to A: {}\n\n", pp::mat_approx(qr.Q*qr.R, A));
+
+	std::cout << std::format("det(A) = {}\n\n", qr.det());
 
 	pp::Vector<double> x = qr.solve(b);
+	std::cout << "b =\n" << b << "\n\n";
+	std::cout << "Solution to Ax=b:\n";
 	std::cout << "correct x =\n" << correctx << "\n\n";
 	std::cout << "x =\n" << x << "\n\n";
-	std::cout << "b =\n" << b << "\n\n";
 	std::cout << "Ax =\n" << A * x << "\n\n";
 
 	pp::Matrix<double> B = RG.create(N,N);
 	pp::QR<double> qrB(B);
 	pp::Matrix<double> B_inv = qrB.inverse();
+	std::cout << "B =\n" << B << "\n\n";
+	std::cout << "Inverse of B:\n";
 	std::cout << "B^-1 =\n" << B_inv << "\n\n";
 	std::cout << "B^-1 B =\n" << B_inv * B << "\n\n";
 	std::cout << "B B^-1 =\n" << B_inv * B << "\n\n";

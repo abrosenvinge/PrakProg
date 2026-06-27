@@ -1,10 +1,11 @@
-set terminal png size 1920,1080
-set output OUTFILE
+set terminal svg size 500,500
+
+data = ARG1
 
 set xlabel "N"
 set ylabel "Time"
 
 f(x) = a * x**3
-fit f(x) INFILE using 1:2 via a
+fit f(x) data using 1:2 via a
 
-plot INFILE using 1:2 with points title "Measured", f(x) with line title "Fit"
+plot data using 1:2 with points title "Measured", f(x) with line title "Fit"
