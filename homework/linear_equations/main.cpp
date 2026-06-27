@@ -39,7 +39,9 @@ int main(int argc, char** argv) {
 	std::cout << "Solution to Ax=b:\n";
 	std::cout << "correct x =\n" << correctx << "\n\n";
 	std::cout << "x =\n" << x << "\n\n";
+	std::cout << std::format("x is equal to correct x: {}\n\n", pp::mat_approx(x,correctx));
 	std::cout << "Ax =\n" << A * x << "\n\n";
+	std::cout << std::format("Ax equals b: {}\n\n", pp::mat_approx(A*x,b));
 
 	pp::Matrix<double> B = RG.create(N,N);
 	pp::QR<double> qrB(B);
