@@ -1,7 +1,6 @@
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Wextra -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -O
 LDLIBS += -lstdc++ -lm
-TIME = /usr/bin/time
 
 PLOT = gnuplot -e "set output \"$@\"" -c
 
@@ -13,7 +12,7 @@ harm_oscillator_plot.svg: diff_eq_plot.gp harm_oscillator.data
 	$(PLOT) $+
 
 harm_oscillator.data: main Makefile
-	./$< -n 5 -a 0 -b 3.1415 --harm_oscillator_diff_eq > $@
+	./$< -n 5 -a 0 -b 6.28 --harm_oscillator_diff_eq > $@
 
 gauss_oscillation_plot.svg: ann_plot.gp gauss_oscillation.data
 	$(PLOT) $+
@@ -45,4 +44,4 @@ ann.o: ann.cpp ann.hpp ../lib/matrix.hpp
 ../integration/integration.o: ../integration/integration.hpp ../integration/integration.cpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.svg *.data test.o
+	$(RM) main Out.txt $(objects) *.svg *.data test.o test

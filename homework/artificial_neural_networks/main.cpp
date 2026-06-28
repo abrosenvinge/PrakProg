@@ -26,6 +26,17 @@ pp::Vector<double> make_gauss_oscillator_start_parameters(size_t n_hidden_neuron
 	}
 	return p;
 }
+pp::Vector<double> make_harm_oscillator_start_parameters(size_t n_hidden_neurons,
+		double a, double b) {
+	pp::Vector<double> p(3*n_hidden_neurons);
+	for (size_t i = 0; i < n_hidden_neurons; ++i) {
+		double ai = a + ((b-a)*i)/(n_hidden_neurons-1.);
+		p[3*i] = ai;
+		p[3*i+1] = 2.;
+		p[3*i+2] = 8. * std::cos(1.1*ai) / n_hidden_neurons;
+	}
+	return p;
+}
 
 void make_plot_data(size_t n,
 		pp::Vector<double>& p0,
@@ -94,7 +105,7 @@ void diff_eq_plot_data(std::function<double(double,double,double,double)> Phi,
 	}
 	std::cout << "\n\n";
 
-	ann.train_diffeq(Phi, a, b, c, yc, dyc, 1, 1);
+	ann.train_diffeq(Phi, a, b, c, yc, dyc, 10, 10);
 
 	for (size_t i = 0; i < n_plot_points; ++i) {
 		double xi = a + i*h;
@@ -136,7 +147,7 @@ int main(int argc, char** argv) {
 			make_plot_data(n, p0, a, b, f, F, df, ddf, 50, 1000);
 		}
 		else if (arg == "--harm_oscillator_diff_eq") {
-			pp::Vector<double> p0 = make_gauss_oscillator_start_parameters(n,a,b);
+			pp::Vector<double> p0 = make_harm_oscillator_start_parameters(n,a,b);
 
 			auto harm_oscillator_diff_eq = [](double ddy, double, double y, double) {
 				return ddy + y;
