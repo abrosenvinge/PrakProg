@@ -1,7 +1,6 @@
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Wextra -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -O
 LDLIBS += -lstdc++ -lm
-TIME = /usr/bin/time
 
 PLOT = gnuplot -e "set output \"$@\"" -c
 
@@ -21,25 +20,25 @@ erf_plot.svg: erf_plot.gp erf_plot.data
 erf_plot.data: main Makefile
 	./$< --erf -5 5 100 > $@
 
-Out.txt: main cc_test_print.sh cc_test.py Makefile
+Out.txt: main print_script.sh integration.py Makefile
 	echo > $@
-	sh ./cc_test_print.sh 'sqrt(x)' 0 1 0.666666666 >> $@
+	sh ./print_script.sh 'sqrt(x)' 0 1 0.666666666 >> $@
 	echo >> $@
-	sh ./cc_test_print.sh '1/sqrt(x)' 0 1 2 >> $@
+	sh ./print_script.sh '1/sqrt(x)' 0 1 2 >> $@
 	echo >> $@
-	sh ./cc_test_print.sh 'sqrt(1-x*x)' 0 1 0.78540 >> $@
+	sh ./print_script.sh 'sqrt(1-x*x)' 0 1 0.78540 >> $@
 	echo >> $@
-	sh ./cc_test_print.sh 'ln(x)/sqrt(x)' 0 1 -4 >> $@
+	sh ./print_script.sh 'ln(x)/sqrt(x)' 0 1 -4 >> $@
 	echo >> $@
-	sh ./cc_test_print.sh 'exp(-x*x)' -INF INF 1.77245 >> $@
+	sh ./print_script.sh 'exp(-x*x)' -INF INF 1.77245 >> $@
 	echo >> $@
-	sh ./cc_test_print.sh 'exp(-x)' 0 INF 1 >> $@
+	sh ./print_script.sh 'exp(-x)' 0 INF 1 >> $@
 
 main: main.o integration.o
 
 main.o: main.cpp integration.hpp
 
-integration.o: integration.hpp integration.cpp
+integration.o: integration.cpp integration.hpp 
 
 clean:
 	$(RM) main Out.txt $(objects) *.svg *.data
