@@ -20,8 +20,8 @@ Homework can be found in the *homework* directory. *homework/lib* contains an im
  - [x] least-squares
  - [x] splines
  - [x] ODE
- - [ ] integration
- - [ ] Monte Carlo
- - [ ] roots
- - [ ] minimisation
+ - [x] integration
+ - [x] Monte Carlo
+ - [x] roots
+ - [x] minimisation
  - [ ] neural network
