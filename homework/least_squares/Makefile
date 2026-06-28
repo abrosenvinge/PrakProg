@@ -1,7 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++23 -O -Wall -Wextra -O
 LDLIBS += -lstdc++ -lm
-TIME = /usr/bin/time
 
 PLOT = gnuplot -e "set output \"$@\"" -c
 
