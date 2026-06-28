@@ -13,7 +13,7 @@ void test(std::string name,
 {
 
 	std::cout << std::format("Test: {}:\n", name);
-	std::cout << "	Correct root(s):\n";
+	std::cout << std::format("	Correct {}:\n", correct_x.size() == 1 ? "minimum" : "minima");
 	for (size_t j = 0; j < correct_x[0].size; ++j) {
 		std::cout << "		";
 		for (size_t i = 0; i < correct_x.size(); ++i) {
@@ -23,19 +23,20 @@ void test(std::string name,
 	}
 	pp::Vector<double> g(x0[0].size);
 	for (size_t i = 0; i < x0.size(); ++i) {
-		int n_evals = 0, n_evals_fd = 0;
+		int n_evals = 0, n_evals_fd = 0, n_evals_unopt = 0;
 		std::cout << "\n";
 		pp::Vector<double> x0i = x0[i];
 		pp::MinimizationResult resi_fd = pp::min_newton_fd([&n_evals_fd,f](auto x){n_evals_fd++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
 		pp::MinimizationResult resi = pp::min_newton([&n_evals,f](auto x){n_evals++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
-		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "Method:", "Forward diff", "Central diff");
-		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "Norm(g):", pp::norm(resi_fd.gfx), pp::norm(resi.gfx));
-		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "#evaluations:", n_evals_fd, n_evals);
-		std::cout << std::format("		{:<25} {:<25} {:<25}\n", "#iterations:", resi_fd.n_iters, resi.n_iters);
+		pp::MinimizationResult resi_unopt = pp::min_newton_central_unopt([&n_evals_unopt,f](auto x){n_evals_unopt++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
+		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "Method:", "Forward diff", "Central diff", "Central diff (unoptimized)");
+		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "Norm(g):", pp::norm(resi_fd.gfx), pp::norm(resi.gfx), pp::norm(resi_unopt.gfx));
+		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "#evaluations:", n_evals_fd, n_evals, n_evals_unopt);
+		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "#iterations:", resi_fd.n_iters, resi.n_iters, resi_unopt.n_iters);
 		std::cout << std::format("		{:<25} {:<25}\n", "x0", "Result");
 		
 		for (size_t j = 0; j < x0i.size; ++j) {
-			std::cout << std::format("		{:<25} {:<25} {:<25}\n", x0i[j], resi_fd.x[j], resi.x[j]);
+			std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", x0i[j], resi_fd.x[j], resi.x[j], resi_unopt.x[j]);
 		}
 	}
 	std::cout << "\n";

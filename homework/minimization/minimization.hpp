@@ -2,9 +2,15 @@
 #include <functional>
 
 namespace pp {
+	void grad_hess_central( const std::function<double(const pp::Vector<double>&)>& f,
+			pp::Vector<double> x,
+			pp::Vector<double>& g,
+			pp::Matrix<double>& H);
+
 	void gradient(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Vector<double>& out);
+
 	void gradient_fd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			double fx,
@@ -41,6 +47,12 @@ namespace pp {
 			double acc = 0.0001,
 			double min_lambda = 1./1024.,
 			int max_iters = 10000);
+
+	MinimizationResult min_newton_central_unopt(const std::function<double(const pp::Vector<double>&)>& f,
+			pp::Vector<double> x,
+			double acc,
+			double min_lambda,
+			int max_iters);
 
 	MinimizationResult leastsq_fit(const std::function<double(double, const pp::Vector<double>&)>& f,
 			const std::vector<double>& x,

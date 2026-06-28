@@ -44,15 +44,51 @@ namespace pp {
 			for (size_t i = 0; i < x.size; ++i) {
 				out[i,j] = 0.;
 				for (int c = -1; c <= 1; c += 2) {
-					x[j] += c * dxj;
+					x[j] += c * 0.5 * dxj;
 					dxi = (1 + std::abs(x[i])) * std::pow(2., -17.3333333);
 					for (int d = -1; d <= 1; d += 2) {
+						x[i] += d * 0.5 * dxi;
+						out[i,j] += c*d*f(x) / (dxj*dxi);
+						x[i] -= d * 0.5 * dxi;
+					}
+					x[j] -= c * 0.5 * dxj;
+				}
+			}
+		}
+	}
+
+	void grad_hess_central( const std::function<double(const pp::Vector<double>&)>& f,
+			pp::Vector<double> x,
+			pp::Vector<double>& g,
+			pp::Matrix<double>& H)
+	{
+		double dxj, dxi, fx;
+		for(size_t j = 0; j < x.size; ++j) {
+			g[j] = 0.;
+			dxj = 0.5*(1 + std::abs(x[j])) * std::pow(2., -17.3333333);
+			for (size_t i = j; i < x.size; ++i) {
+				H[i,j] = 0.;
+				dxi = 0.5*(1 + std::abs(x[i])) * std::pow(2., -17.3333333);
+				for (int c = -1; c <= 1; c += 2) {
+					x[j] += c * dxj;
+					for (int d = -1; d <= 1; d += 2) {
 						x[i] += d * dxi;
-						out[i,j] += c*d*f(x) / (4*dxj*dxi);
+						fx = f(x);
+						H[i,j] += c*d*fx;
+						if (i == j && c == d) g[i] += c * fx;
 						x[i] -= d * dxi;
 					}
 					x[j] -= c * dxj;
 				}
+ 				H[i,j] /= (4*dxj*dxi);
+			}
+			g[j] /= 4*dxj; // 4 because the total step is 2dxj
+		}
+
+		// Since the computed Hessian will be fully symmetric, we may as well save roughly half the function evaluations
+		for (size_t j = 0; j < x.size; ++j) {
+			for (size_t i = 0; i < j; ++i) {
+				H[i,j] = H[j,i];
 			}
 		}
 	}
@@ -104,7 +140,7 @@ namespace pp {
 			}
 
 			x = new_x;
-			fx = f(new_x); // this evalution can be optimized away, since it was evaluated in the loop
+			fx = f(new_x); // this evaluation can be optimized away, since it was evaluated in the loop
 			gradient_fd(f, x, fx, g);
 			hessian_fd(f, x, g, H);
 
@@ -145,7 +181,47 @@ namespace pp {
 			}
 
 			x = new_x;
-			fx = f(new_x); // this evalution can be optimized away, since it was evaluated in the loop
+			fx = f(new_x); // this evaluation can be optimized away, since it was evaluated in the loop
+			grad_hess_central(f,x,g,H);
+
+			iters++;
+		}
+
+		return MinimizationResult(fx, x, g, H, iters);
+	}
+
+	MinimizationResult min_newton_central_unopt(const std::function<double(const pp::Vector<double>&)>& f,
+			pp::Vector<double> x,
+			double acc,
+			double min_lambda,
+			int max_iters)
+	{
+		double fx = f(x);
+		pp::Vector<double> g(x.size);
+		gradient(f, x, g);
+
+		pp::Matrix<double> H(x.size,x.size);
+		hessian(f, x, H);
+
+		int iters = 0;
+		
+		while (norm(g) >= acc && iters < max_iters) {
+			for (size_t i = 0; i < H.n_rows; ++i) H[i,i] += 1e-6;
+
+			pp::QR<double> qrH(H);
+			pp::Vector<double> dx = qrH.solve(-g);
+
+			double lambda = 1.;
+			pp::Vector<double> new_x = x + dx;
+
+			while (f(new_x) >= fx && lambda >= min_lambda) {
+				lambda *= 0.5;
+				dx *= 0.5;
+				new_x -= dx;
+			}
+
+			x = new_x;
+			fx = f(new_x); // this evaluation can be optimized away, since it was evaluated in the loop
 			gradient(f, x, g);
 			hessian(f, x, H);
 
