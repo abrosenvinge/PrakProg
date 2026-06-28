@@ -7,7 +7,9 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o
 
-plot.png: plot.gp params.txt
+all: plot.svg Out.txt
+
+plot.svg: plot.gp params.txt
 	$(PLOT) $+
 
 # grouped target since main produces both
@@ -19,4 +21,4 @@ main: main.o
 main.o: main.cpp least_squares.hpp ../lib/matrix.hpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.png
+	$(RM) main Out.txt $(objects) *.svg params.txt
