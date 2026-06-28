@@ -24,4 +24,4 @@ Homework can be found in the *homework* directory. *homework/lib* contains an im
  - [x] Monte Carlo
  - [x] roots
  - [x] minimisation
- - [ ] neural network
+ - [x] neural network
