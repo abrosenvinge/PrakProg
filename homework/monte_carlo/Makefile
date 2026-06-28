@@ -1,7 +1,6 @@
 CXX = g++
 CXXFLAGS = -std=c++23 -Wall -Wextra -g
 LDLIBS += -lstdc++ -lm
-TIME = /usr/bin/time
 
 PLOT = gnuplot -e "set output \"$@\"" -c
 
@@ -26,4 +25,4 @@ main.o: main.cpp monte_carlo.hpp
 monte_carlo.o: monte_carlo.cpp monte_carlo.hpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.svg *.data
+	$(RM) main Out.txt $(objects) *.svg *.data fit.log
