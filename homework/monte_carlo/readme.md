@@ -1,4 +1,4 @@
-# Linear equations
+# Monte Carlo integration
 Project can be built using
 ```sh
 make

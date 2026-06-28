@@ -1,4 +1,4 @@
-# Linear equations
+# EVD
 Project can be built using
 ```sh
 make

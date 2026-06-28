@@ -1,4 +1,4 @@
-# Linear equations
+# Ordinary least-squares
 Project can be built using
 ```sh
 make

@@ -1,4 +1,4 @@
-# Linear equations
+# Root finding
 Project can be built using
 ```sh
 make

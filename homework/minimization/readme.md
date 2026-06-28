@@ -1,4 +1,4 @@
-# Linear equations
+# Minimization
 Project can be built using
 ```sh
 make

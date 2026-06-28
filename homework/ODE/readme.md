@@ -1,4 +1,4 @@
-# Linear equations
+# ODE
 Project can be built using
 ```sh
 make

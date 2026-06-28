@@ -1,4 +1,4 @@
-# Linear equations
+# Integration
 Project can be built using
 ```sh
 make

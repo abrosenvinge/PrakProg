@@ -1,4 +1,4 @@
-# Linear equations
+# Splines
 Project can be built using
 ```sh
 make
