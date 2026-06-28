@@ -7,21 +7,24 @@ PLOT = gnuplot -e "set output \"$@\"" -c
 
 objects = main.o
 
-all: exp_plot.png quadratic_plot.png sin_plot.png
+all: exp_plot.svg quadratic_plot.svg sin_plot.svg Out.txt
 
-exp_plot.png: plot.gp exp_plot.data
+Out.txt: main
+	./$< --test > $@
+
+exp_plot.svg: plot.gp exp_plot.data
 	$(PLOT) $+ "exp"
 
 exp_plot.data: main Makefile
 	./$< --start -5 --end 5 -f exp --n_points 10 --n_interp_points 100 > $@
 
-quadratic_plot.png: plot.gp quadratic_plot.data
+quadratic_plot.svg: plot.gp quadratic_plot.data
 	$(PLOT) $+ "quadratic"
 
 quadratic_plot.data: main Makefile
 	./$< --start -5 --end 5 -f quadratic --n_points 10 --n_interp_points 100 > $@
 
-sin_plot.png: plot.gp sin_plot.data
+sin_plot.svg: plot.gp sin_plot.data
 	$(PLOT) $+ "sin"
 
 sin_plot.data: main Makefile
@@ -32,4 +35,4 @@ main: main.o
 main.o: main.cpp splines.hpp
 
 clean:
-	$(RM) main Out.txt $(objects) *.png
+	$(RM) main Out.txt $(objects) *.svg *.data
