@@ -5,7 +5,7 @@
 #include <functional>
 
 namespace pp {
-	void gradient(const std::function<double(const pp::Vector<double>&)>& f,
+	void gradient_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Vector<double>& out) 
 	{
@@ -34,7 +34,7 @@ namespace pp {
 		}
 	}
 
-	void hessian(const std::function<double(const pp::Vector<double>&)>& f,
+	void hessian_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Matrix<double>& out)
 	{
@@ -57,7 +57,7 @@ namespace pp {
 		}
 	}
 
-	void grad_hess_central( const std::function<double(const pp::Vector<double>&)>& f,
+	void grad_hess_cd( const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Vector<double>& g,
 			pp::Matrix<double>& H)
@@ -65,10 +65,10 @@ namespace pp {
 		double dxj, dxi, fx;
 		for(size_t j = 0; j < x.size; ++j) {
 			g[j] = 0.;
-			dxj = 0.5*(1 + std::abs(x[j])) * std::pow(2., -17.3333333);
+			dxj = (1 + std::abs(x[j])) * std::pow(2., -17.3333333);
 			for (size_t i = j; i < x.size; ++i) {
 				H[i,j] = 0.;
-				dxi = 0.5*(1 + std::abs(x[i])) * std::pow(2., -17.3333333);
+				dxi = (1 + std::abs(x[i])) * std::pow(2., -17.3333333);
 				for (int c = -1; c <= 1; c += 2) {
 					x[j] += c * dxj;
 					for (int d = -1; d <= 1; d += 2) {
@@ -150,7 +150,7 @@ namespace pp {
 		return MinimizationResult(fx, x, g, H, iters);
 	}
 
-	MinimizationResult min_newton(const std::function<double(const pp::Vector<double>&)>& f,
+	MinimizationResult min_newton_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			double acc,
 			double min_lambda,
@@ -158,10 +158,10 @@ namespace pp {
 	{
 		double fx = f(x);
 		pp::Vector<double> g(x.size);
-		gradient(f, x, g);
+		gradient_cd(f, x, g);
 
 		pp::Matrix<double> H(x.size,x.size);
-		hessian(f, x, H);
+		hessian_cd(f, x, H);
 
 		int iters = 0;
 		
@@ -182,7 +182,7 @@ namespace pp {
 
 			x = new_x;
 			fx = f(new_x); // this evaluation can be optimized away, since it was evaluated in the loop
-			grad_hess_central(f,x,g,H);
+			grad_hess_cd(f,x,g,H);
 
 			iters++;
 		}
@@ -190,7 +190,7 @@ namespace pp {
 		return MinimizationResult(fx, x, g, H, iters);
 	}
 
-	MinimizationResult min_newton_central_unopt(const std::function<double(const pp::Vector<double>&)>& f,
+	MinimizationResult min_newton_cd_unopt(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			double acc,
 			double min_lambda,
@@ -198,10 +198,10 @@ namespace pp {
 	{
 		double fx = f(x);
 		pp::Vector<double> g(x.size);
-		gradient(f, x, g);
+		gradient_cd(f, x, g);
 
 		pp::Matrix<double> H(x.size,x.size);
-		hessian(f, x, H);
+		hessian_cd(f, x, H);
 
 		int iters = 0;
 		
@@ -222,8 +222,8 @@ namespace pp {
 
 			x = new_x;
 			fx = f(new_x); // this evaluation can be optimized away, since it was evaluated in the loop
-			gradient(f, x, g);
-			hessian(f, x, H);
+			gradient_cd(f, x, g);
+			hessian_cd(f, x, H);
 
 			iters++;
 		}
@@ -248,6 +248,6 @@ namespace pp {
 			}
 			return chi2;
 		};
-		return min_newton(cost, p0, acc, min_lambda, max_iters);
+		return min_newton_cd(cost, p0, acc, min_lambda, max_iters);
 	}
 }

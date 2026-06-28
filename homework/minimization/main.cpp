@@ -27,8 +27,8 @@ void test(std::string name,
 		std::cout << "\n";
 		pp::Vector<double> x0i = x0[i];
 		pp::MinimizationResult resi_fd = pp::min_newton_fd([&n_evals_fd,f](auto x){n_evals_fd++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
-		pp::MinimizationResult resi = pp::min_newton([&n_evals,f](auto x){n_evals++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
-		pp::MinimizationResult resi_unopt = pp::min_newton_central_unopt([&n_evals_unopt,f](auto x){n_evals_unopt++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
+		pp::MinimizationResult resi = pp::min_newton_cd([&n_evals,f](auto x){n_evals++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
+		pp::MinimizationResult resi_unopt = pp::min_newton_cd_unopt([&n_evals_unopt,f](auto x){n_evals_unopt++; return f(x);}, x0i, 0.0001, 0.0001, 10000);
 		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "Method:", "Forward diff", "Central diff", "Central diff (unoptimized)");
 		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "Norm(g):", pp::norm(resi_fd.gfx), pp::norm(resi.gfx), pp::norm(resi_unopt.gfx));
 		std::cout << std::format("		{:<25} {:<25} {:<25} {:<25}\n", "#evaluations:", n_evals_fd, n_evals, n_evals_unopt);
@@ -112,8 +112,8 @@ void higgs_fit(double acc, size_t n_points, pp::Vector<double> p0) {
 	std::cerr << std::format("		Γ = {}\n", res.x[1]);
 	std::cerr << std::format("		A = {}\n\n", res.x[2]);
 
-	std::cerr << std::format("	χ² = {}\n", res.fx);
-	std::cerr << std::format("	dof ={}\n", energy.size() - p.size);
+	std::cerr << std::format("	χ²  = {}\n", res.fx);
+	std::cerr << std::format("	dof = {}\n", energy.size() - p.size);
 }
 
 int main(int argc, char** argv) {

@@ -2,12 +2,12 @@
 #include <functional>
 
 namespace pp {
-	void grad_hess_central( const std::function<double(const pp::Vector<double>&)>& f,
+	void grad_hess_cd( const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Vector<double>& g,
 			pp::Matrix<double>& H);
 
-	void gradient(const std::function<double(const pp::Vector<double>&)>& f,
+	void gradient_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Vector<double>& out);
 
@@ -16,7 +16,7 @@ namespace pp {
 			double fx,
 			pp::Vector<double>& out);
 
-	void hessian(const std::function<double(const pp::Vector<double>&)>& f,
+	void hessian_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			pp::Matrix<double>& out);
 
@@ -36,7 +36,7 @@ namespace pp {
 			fx(fx), x(std::move(x)), gfx(std::move(gfx)), Hfx(std::move(Hfx)), n_iters(n_iters) {};
 	};
 
-	MinimizationResult min_newton(const std::function<double(const pp::Vector<double>&)>& f,
+	MinimizationResult min_newton_cd(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			double acc = 0.0001,
 			double min_lambda = 1./1024.,
@@ -48,7 +48,7 @@ namespace pp {
 			double min_lambda = 1./1024.,
 			int max_iters = 10000);
 
-	MinimizationResult min_newton_central_unopt(const std::function<double(const pp::Vector<double>&)>& f,
+	MinimizationResult min_newton_cd_unopt(const std::function<double(const pp::Vector<double>&)>& f,
 			pp::Vector<double> x,
 			double acc,
 			double min_lambda,

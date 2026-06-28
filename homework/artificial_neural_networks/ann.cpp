@@ -184,7 +184,7 @@ namespace pp {
 			double boundary_term = alpha * yc_err * yc_err + beta * dyc_err * dyc_err;
 			return I + boundary_term;
 		};
-		MinimizationResult min_res = min_newton(C, p, 0.001, 0.001, 1000);
+		MinimizationResult min_res = min_newton_cd(C, p, 0.001, 0.001, 1000);
 		p = min_res.x;
 	}
 	
