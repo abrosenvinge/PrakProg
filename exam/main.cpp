@@ -55,6 +55,58 @@ void print_nonuniform_matrix(
 	}
 }
 
+void make_plot(const std::function<double(double,double)>& f,
+		const std::vector<double>& x,
+		const std::vector<double>& y,
+		const pp::Matrix<double>& F,
+		const std::vector<double>& xint,
+		const std::vector<double>& yint,
+		std::string mode,
+		bool output)
+{
+		size_t n = xint.size();
+		pp::Matrix<double> Fint;
+		if (mode == "normal") {
+			Fint = pp::Matrix<double>(n,n);
+			for (size_t j = 0; j < n; ++j) {
+				for (size_t i = 0; i < n; ++i) {
+					Fint[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+				}
+			}
+		}
+		else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
+
+		if (output) {
+			print_nonuniform_matrix(x,y,F);
+			std::cout << "\n\n";
+			print_nonuniform_matrix(xint, yint, Fint);
+			std::cout << "\n\n";
+			print_nonuniform_matrix(xint, yint, evaluate_on_grid(f,xint,yint));
+		}
+}
+
+void test_optimized(std::string fname,
+		const std::vector<double>& x,
+		const std::vector<double>& y,
+		const pp::Matrix<double>& F,
+		const std::vector<double>& xint,
+		const std::vector<double>& yint,
+		bool output) 
+{
+	size_t n = xint.size();
+	pp::Matrix<double> Fnorm(n,n);
+	for (size_t j = 0; j < n; ++j) {
+		for (size_t i = 0; i < n; ++i) {
+			Fnorm[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
+		}
+	}
+	pp::Matrix<double> Fgrid = pp::bilinear(x,y,F,xint,yint);
+	bool equal = pp::mat_approx(Fnorm, Fgrid);
+	if (output)
+		std::cout << std::format("Test for function {}: {}\n", fname, 
+				equal ? "results are equal" : "results are not equal");
+}
+
 int main(int argc, char** argv) {
 	double ax = -1, bx = 1, ay = -1, by = 1; // bounds for the grid
 	size_t nx = 10, ny = 5; // number of grid points along each axis
@@ -62,6 +114,7 @@ int main(int argc, char** argv) {
 	std::function<double(double,double)> f = [](double x, double y) { return x*y; }; // function to interpolate
 	std::string xspacing = "regular", yspacing = "regular", // how the sample grid points should be distributed along each axis ("regular" or "logarithmic")
 		mode = "normal"; // whether to use the normal interpolation or the one intended for grid evaluation
+	bool plot = false; // whether to make plot data
 	bool output = true; // whether to output data for plotting
 	bool test = false; // whether to test the two methods against eachother
 	std::string fname = "plane";
@@ -94,6 +147,7 @@ int main(int argc, char** argv) {
 		}
 		else if (arg == "--xspacing" && ++i < argc) xspacing = argv[i];
 		else if (arg == "--yspacing" && ++i < argc) yspacing = argv[i];
+		else if (arg == "--plot") plot = true; 
 		else if (arg == "--output") output = true; 
 		else if (arg == "--nooutput") output = false; 
 		else if (arg == "--test") test = true; 
@@ -112,40 +166,10 @@ int main(int argc, char** argv) {
 	std::vector<double> xint = make_regular_grid_axis(ax,bx,n), 
 						yint = make_regular_grid_axis(ay,by,n);
 
-	if (!test) {
-		pp::Matrix<double> Fint;
-		if (mode == "normal") {
-			Fint = pp::Matrix<double>(n,n);
-			for (size_t j = 0; j < n; ++j) {
-				for (size_t i = 0; i < n; ++i) {
-					Fint[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
-				}
-			}
-		}
-		else if (mode == "grid") Fint = pp::bilinear(x,y,F,xint,yint);
+	if (plot) make_plot(f,x,y,F,xint,yint,mode,output);
 
-		if (output) {
-			print_nonuniform_matrix(x,y,F);
-			std::cout << "\n\n";
-			print_nonuniform_matrix(xint, yint, Fint);
-			std::cout << "\n\n";
-			print_nonuniform_matrix(xint, yint, evaluate_on_grid(f,xint,yint));
-		}
-	}
-	else {
-		// pp::Matrix<double> Fnorm(n,n);
-		// Fnorm = pp::Matrix<double>(n,n);
-		// for (size_t j = 0; j < n; ++j) {
-		// 	for (size_t i = 0; i < n; ++i) {
-		// 		Fnorm[i,j] = pp::bilinear(x,y,F,xint[i],yint[j]);
-		// 	}
-		// }
-		// pp::Matrix<double> Fgrid = pp::bilinear(x,y,F,xint,yint);
-		// bool equal = pp::mat_approx(Fnorm, Fgrid);
-		// std::cout << std::format("Test for function {}: {}\n", fname, 
-		// 		equal ? "Results are equal" : "Results are not equal");
+	if (test) test_optimized(fname,x,y,F,xint,yint,output);
 
-		double I = pp::integrate_bilinear(x, y, F, -1, 1, -1, 1);
-		std::cout << I;
-	}
+	// double I = pp::integrate_bilinear(x, y, F, -1, 1, -1, 1);
+	// std::cout << I;
 }
