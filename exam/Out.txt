@@ -1,4 +1,34 @@
+Integral of "plane" from -1 to 1 and -1 to 1 with nx = 10 and ny = 10 (N = 100)
+	                          Result                    Error                    
+	Exact                     -0                                                 
+	Bi-linear                 1.3183898417423734e-16    1.3183898417423734e-16   
+	Quasi-random mc           -0.0006791967894749719    0.0006791967894749719    
 
+Integral of "plane" from -1 to 0.5 and -1 to 0.3 with nx = 100 and ny = 100 (N = 10000)
+	                          Result                    Error                    
+	Exact                     -0.19500000000000003                               
+	Bi-linear                 -0.19500000000000037      3.3306690738754696e-16   
+	Quasi-random mc           -0.19500805773121682      8.057731216787323e-06    
+
+Integral of "saddle" from -1.121 to 0.5 and -0.12 to 0.3 with nx = 100 and ny = 100 (N = 10000)
+	                          Result                    Error                    
+	Exact                     -0.0190255149                                      
+	Bi-linear                 -0.019025514900000044     4.5102810375396984e-17   
+	Quasi-random mc           -0.019032883779194713     7.368879194714212e-06    
+
+Integral of "gauss_cos" from -1 to 1 and -1 to 1 with nx = 100 and ny = 100 (N = 10000)
+	                          Result                    Error                    
+	Exact                     -0.5729182318864672                                
+	Bi-linear                 -0.5724118431050064       0.0005063887814608092    
+	Quasi-random mc           -0.572737900995571        0.00018033089089619647   
+
+Integral of "gauss_cos" from -1.121 to 0.5 and -0.12 to 0.3 with nx = 100 and ny = 100 (N = 10000)
+	                          Result                    Error                    
+	Exact                     0.38974118640980043                                
+	Bi-linear                 0.38971668262767334       2.4503782127094365e-05   
+	Quasi-random mc           0.3897595272553947        1.8340845594266852e-05   
+
+Tests for optimized evaluation:
 Test for function plane: results are equal
 Test for function saddle: results are equal
 Test for function gaussian: results are equal
