@@ -1,6 +1,18 @@
 # Exam problem
 **Bi-linear interpolation on a rectilinear grid in two dimensions**
 
+Project can be built using
+```sh
+make
+```
+and cleaned using
+```sh
+make clean
+```
+## Requirements
+- ```gnuplot``` 
+- ```GNU time``` available at ```/usr/bin/time```
+
 ## Introduction
 A rectilinear grid (note that rectilinear is not necessarily cartesian nor regular) in two dimensions is a set of $n_x\times n_y$ points where each point can be adressed by a double index $(i,j)$ where $1 \leq i \leq n_x$, $1 \leq j \leq n_y$ and the coordinates of the point $(i,j)$ are given as $(x_i,y_j)$, where $x$ and $y$ are vectors with sizes $n_x$ and $n_y$ correspondingly. The values of the tabulated function $F$ at the grid points can then be arranged as a matrix $\{F_i, j=F(x_i,y_j)\}$. 
 ## Problem
@@ -29,6 +41,27 @@ These binary searches are unnecessary however, because the grid points $x'$ and 
 Implement this and plot the time taken for the two methods as a function of $N$.
 
 # Solution
+I will refer to some functions in this by a name. These are 
+saddle:
+```math
+F(x,y) = xy
+```
+gaussian:
+```math
+F(x,y) = \exp\left(-\frac{(x+3)^2 + (y+3)^2}{8}\right)
+```
+wave:
+```math
+F(x,y) = \exp\left(-\sqrt{x^2 + y^2}/4\right) \cos\left(\sqrt{x^2 + y^2}\right)
+```
+plane:
+```math
+F(x,y) = y-x
+```
+gauss_cos:
+```math
+F(x,y) = \exp\left(-x^2\right) \cos(5y)
+```
 ### a
 #### Mathematical solution
 To interpolate $F$ inside the rectangle with corners $(x_i,y_j)$, $(x_{i+1},y_j)$, $(x_i,y_{j+1})$, $(x_{i+1},y_{i+1})$ we must, according to the book, determine the coefficient in the bilinear function 
@@ -108,20 +141,16 @@ double bilinear(const std::vector<double>& x,
 One could of course compute and store the coefficients for the whole grid initially, but the performance gains are likely near zero, since interpolation will still require four lookups in vectors just like the above implementation. This would however, come at the cost of storing four addiditional matrices of coefficients.
 
 #### Plots
-To test the implementation we interpolate the following functions
-```math
-F(x,y) = xy
-```
-```math
-F(x,y) = \exp\left(-\frac{(x+3)^2 + (y+3)^2}{8}\right)
-```
-```math
-F(x,y) = \exp\left(-\sqrt{x^2 + y^2}/4\right) \cos\left(\sqrt{x^2 + y^2}\right)
-```
-which can be seen in [saddle_plot.svg](./saddle_plot.svg), [gauss_plot.svg](./gauss_plot.svg), and [wave_plot.svg](./wave_plot.svg) respectively. Notice that the interpolation is exact for the first of these. It does reasonably well approximating the gaussian as well but struggles with the oscillations of the third function. Notice also that the sample grid in the second case is not regular, to show that the algorithm works on any rectilinear grid.
+To test the implementation we interpolate saddle, gauss, and wave which can be seen in [saddle_plot.svg](./saddle_plot.svg), [gauss_plot.svg](./gauss_plot.svg), and [wave_plot.svg](./wave_plot.svg) respectively. Notice that the interpolation is exact for the first of these. It does reasonably well approximating the gaussian as well but struggles with the oscillations of the third function. Notice also that the sample grid in the second case is not regular, to show that the algorithm works on any rectilinear grid.
 
 ### b
-This algorithm is similarly implemented in [bilinear.hpp](./bilinear.hpp) and [bilinear.cpp](./bilinear.cpp) in the function 
+Integration of a single grid square can easily be done:
+```math
+\int_{a_y}^{b_y} \int_{a_x}^{b_x} B_{ij}(x,y) dx dy = a_{ij} (b_x-a_x)(b_y-a_y) ? \frac{1}{2} b_{ij}((b_x-x_i)^2-(a_x-x_i)^2)(b_y-a_y) + \frac{1}{2} c_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)(b_x-a_x) + \frac{1}{4} d_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)((b_x-x_i)^2-(a_x-x_j)^2)
+```
+which is implemented in ```integrate_bilinear_rectangle```.
+
+The integration algorithm is implemented in [bilinear.hpp](./bilinear.hpp) and [bilinear.cpp](./bilinear.cpp) in the function 
 ```c++
 double integrate_bilinear(const std::vector<double>& x, 
 			const std::vector<double>& y,
@@ -129,13 +158,15 @@ double integrate_bilinear(const std::vector<double>& x,
 			double ax, double bx,
 			double ay, double by);
 ```
+It iterates through all the grid squares between the integral bounds and calls ```integrate_bilinear_rectangle``` for each one with the appropriate limits.
+
+#### Test
+[Out.txt](./Out.txt) shows some tests of the integrator compared to the exact value and the result of the [quasi-random Monte-Carlo integrator from the homework](../homework/monte_carlo/). The interpolation integrates the plane and saddle functions almost exactly, because the interpolation is exact for these functions. For the other functions the interpolation algorithm is roughly on par with the quasi-random Monte-Carlo integrator.
+
+#### Plots
+[saddle_plot.svg](./saddle_plot.svg), [gauss_plot.svg](./gauss_plot.svg),[plane_plot.svg](./plane_plot.svg), and [gauss_cos_plot](./gauss_cos_plot.svg) show the exact integral of the function (from 0 to x and 0 to y) as well as the one calculated using the interpolation. They seem to match very well.
 
 ### c
-Integration of a single grid square can easily be done:
-```math
-\int_{a_y}^{b_y} \int_{a_x}^{b_x} B_{ij}(x,y) dx dy = a_{ij} (b_x-a_x)(b_y-a_y) ? \frac{1}{2} b_{ij}((b_x-x_i)^2-(a_x-x_i)^2)(b_y-a_y) + \frac{1}{2} c_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)(b_x-a_x) + \frac{1}{4} d_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)((b_x-x_i)^2-(a_x-x_j)^2)
-```
-
 This algorithm is also implemented in [bilinear.hpp](./bilinear.hpp) and [bilinear.cpp](./bilinear.cpp) with the signature 
 ```c++
 double bilinear(const std::vector<double>& x,
@@ -159,12 +190,6 @@ for (size_t pj = 0; pj < py.size(); ++pj) {
 
 #### Plots
 This method is tested on the functions 
-```math
-F(x,y) = y-x
-```
-```math
-F(x,y) = \exp\left(-x^2\right) \cos(5y)
-```
 which can be seen in [plane_plot.svg](./plane_plot.svg) and [gauss_cos_plot](./gauss_cos_plot.svg) respectively.
 
 The timing of the two methods can be seen in [timing_plot.svg](./timing_plot.svg). Here it is clearly seen that the grid version is around twice as fast. Note that in both cases a matrix to store the output is allocated which is in principle unnecessary for the method from part a.

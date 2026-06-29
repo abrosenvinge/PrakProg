@@ -183,6 +183,11 @@ int main(int argc, char** argv) {
 		{"gauss_cos", [](double ax, double bx, double ay, double by) { 
 							return 0.1*std::sqrt(std::numbers::pi)*(std::sin(5*ay)-std::sin(5*by))*(std::erf(ax)-std::erf(bx)); 
 						}},
+		{"gaussian", [](double ax, double bx, double ay, double by) { 
+							ax += 3; bx += 3; ay += 3; by += 3;
+							double c = 2*std::sqrt(2);
+							return 2*std::numbers::pi*(std::erf(ax/c)-std::erf(bx/c))*(std::erf(ay/c)-std::erf(by/c)); 
+						}},
 	};
 
 	std::string fname = "plane"; // name of the function

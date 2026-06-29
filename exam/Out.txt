@@ -28,6 +28,18 @@ Integral of "gauss_cos" from -1.121 to 0.5 and -0.12 to 0.3 with nx = 100 and ny
 	Bi-linear                 0.38971668262767334       2.4503782127094365e-05   
 	Quasi-random mc           0.3897595272553947        1.8340845594266852e-05   
 
+Integral of "gaussian" from -10 to 10 and -10 to 10 with nx = 1000 and ny = 1000 (N = 1000000)
+	                          Result                    Error                    
+	Exact                     25.121049373899478                                 
+	Bi-linear                 25.121048092227767        1.2816717109842557e-06   
+	Quasi-random mc           25.121137043370602        8.76694711244852e-05     
+
+Integral of "gaussian" from -3 to 3 and -2 to 2 with nx = 10 and ny = 10 (N = 100)
+	                          Result                    Error                    
+	Exact                     3.7889071359059145                                 
+	Bi-linear                 3.7948258220493902        0.005918686143475682     
+	Quasi-random mc           3.7932128825472864        0.004305746641371844     
+
 Tests for optimized evaluation:
 Test for function plane: results are equal
 Test for function saddle: results are equal
