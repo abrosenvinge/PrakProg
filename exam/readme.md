@@ -15,6 +15,12 @@ static double bilinear(double[] x, double[] y, matrix F, double px, double py)
 ```
 
 ### b
+The bilinear functions can easily be integrated exactly. Use this to approximate the integral of a function
+```math
+\int_{a_y}^{b_y} \int_{a_x}^{b_x} f(x,y) dx dy
+```
+
+### c
 It is sometimes useful to evaluate the interpolation at every point on a denser grid given by two vectors $x'$ and $y'$ (for instance for plotting). Because the above function takes only a single point at a time, it is necessary to perform two binary searches for each point. Evaluation on an $N\times N$ grid is therefore $O(N^2 log(N))$.
 
 These binary searches are unnecessary however, because the grid points $x'$ and $y'$ are sorted. Therefore, it is possible to evaluate the interpolation on a grid in $O(N^2)$.
