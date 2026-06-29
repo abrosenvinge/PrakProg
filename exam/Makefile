@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++23 -Wall -Wextra -g
+CXXFLAGS = -std=c++23 -Wall -Wextra -O
 LDLIBS += -lstdc++ -lm
 TIME = /usr/bin/time
 
