@@ -1,4 +1,4 @@
-set terminal svg
+set terminal svg background 'white'
 
 data = ARG1
 

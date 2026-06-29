@@ -11,7 +11,7 @@
 
 <g id="gnuplot_canvas">
 
-<rect x="0" y="0" width="900" height="900" fill="none"/>
+<rect x="0" y="0" width="900" height="900" fill="#ffffff"/>
 <defs>
 
 	<circle id='gpDot' r='0.5' stroke-width='0.5' stroke='currentColor'/>
@@ -31,7 +31,7 @@
 	<path id='gpPt13' stroke-width='0.222' stroke='currentColor' d='M0,1.330 L1.265,0.411 L0.782,-1.067 L-0.782,-1.076 L-1.265,0.411 z'/>
 	<use xlink:href='#gpPt13' id='gpPt14' fill='currentColor' stroke='none'/>
 	<filter id='textbox' filterUnits='objectBoundingBox' x='0' y='0' height='1' width='1'>
-	  <feFlood flood-color='white' flood-opacity='1' result='bgnd'/>
+	  <feFlood flood-color='#FFFFFF' flood-opacity='1' result='bgnd'/>
 	  <feComposite in='SourceGraphic' in2='bgnd' operator='atop'/>
 	</filter>
 	<filter id='greybox' filterUnits='objectBoundingBox' x='0' y='0' height='1' width='1'>
@@ -39,7 +39,7 @@
 	  <feComposite in='SourceGraphic' in2='grey' operator='atop'/>
 	</filter>
 </defs>
-<g fill="none" color="white" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
@@ -253,7 +253,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1a"  fill="none"><title>gnuplot_plot_1a</title>
-<g fill="none" color="white" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(192, 192, 192)'  d='M270.88,235.82 L271.69,236.77 L272.50,237.71 L273.31,238.65 L274.12,239.60 L274.93,240.54 L275.74,241.48 L276.55,242.43
@@ -2764,7 +2764,7 @@
 	<path stroke='rgb(192, 192, 192)'  d='M364.27,45.01 L406.83,45.01  '/></g>
 	</g>
 	<g id="gnuplot_plot_2a"  fill="none"><title>gnuplot_plot_2a</title>
-<g fill="none" color="white" stroke="rgb(192, 192, 192)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="rgb(192, 192, 192)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(  0, 158, 115)'  d='M270.88,235.86 L272.38,237.61 L274.16,239.68 L276.27,242.14 L278.77,245.07 L281.74,248.53 L285.27,252.65 L289.46,257.53
@@ -3120,7 +3120,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1b"  fill="none"><title>gnuplot_plot_1b</title>
-<g fill="none" color="white" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(255, 165,   0)'  d='M720.88,235.82 L721.69,236.77 L722.50,237.71 L723.31,238.65 L724.12,239.60 L724.93,240.54 L725.74,241.48 L726.55,242.43
@@ -5630,7 +5630,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(255, 165,   0)'  d='M814.27,45.01 L856.83,45.01  '/></g>
 	</g>
-<g fill="none" color="white" stroke="rgb(255, 165,   0)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="rgb(255, 165,   0)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M826.28,334.43 L619.93,386.78  '/></g>
@@ -5850,7 +5850,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1c"  fill="none"><title>gnuplot_plot_1c</title>
-<g fill="none" color="white" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(148,   0, 211)'  d='M270.88,678.98 L271.69,679.72 L272.50,680.45 L273.31,681.16 L274.12,681.87 L274.93,682.57 L275.74,683.26 L276.55,683.94
@@ -8360,7 +8360,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(148,   0, 211)'  d='M364.27,495.01 L406.83,495.01  '/></g>
 	</g>
-<g fill="none" color="white" stroke="rgb(148,   0, 211)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="rgb(148,   0, 211)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M376.28,784.43 L169.93,836.78  '/></g>
@@ -8580,7 +8580,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 	<g id="gnuplot_plot_1d"  fill="none"><title>gnuplot_plot_1d</title>
-<g fill="none" color="white" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="black" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(  0,   0, 255)'  d='M720.88,680.17 L721.69,680.89 L722.50,681.60 L723.31,682.29 L724.12,682.98 L724.93,683.65 L725.74,684.32 L726.55,684.97
@@ -11090,7 +11090,7 @@
 <g fill="none" color="black" stroke="currentColor" stroke-width="0.50" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='rgb(  0,   0, 255)'  d='M814.27,495.01 L856.83,495.01  '/></g>
 	</g>
-<g fill="none" color="white" stroke="rgb(  0,   0, 255)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
+<g fill="none" color="#FFFFFF" stroke="rgb(  0,   0, 255)" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="1.00" stroke-linecap="butt" stroke-linejoin="miter">
 	<path stroke='black'  d='M826.28,784.43 L619.93,836.78  '/></g>

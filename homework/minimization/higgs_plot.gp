@@ -1,4 +1,4 @@
-set terminal svg size 500,500
+set terminal svg background 'white' size 500,500
 
 fit_data = ARG1
 cern_data = ARG2

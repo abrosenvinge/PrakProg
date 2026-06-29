@@ -1,4 +1,4 @@
-set terminal svg size 1300,800
+set terminal svg background 'white' size 1300,800
 
 data = ARG1
 

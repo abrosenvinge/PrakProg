@@ -1,4 +1,4 @@
-set terminal svg size 800,600
+set terminal svg background 'white' size 800,600
 load ARG1 # loads the values of a and lambda from params.txt
 
 f(t) = a * exp(-lambda * t)
