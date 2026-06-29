@@ -19,6 +19,7 @@ The bilinear functions can easily be integrated exactly. Use this to approximate
 ```math
 \int_{a_y}^{b_y} \int_{a_x}^{b_x} f(x,y) dx dy
 ```
+where $a_x$, $b_x$, $a_y$, and $b_y$ are contained in the grid.
 
 ### c
 It is sometimes useful to evaluate the interpolation at every point on a denser grid given by two vectors $x'$ and $y'$ (for instance for plotting). Because the above function takes only a single point at a time, it is necessary to perform two binary searches for each point. Evaluation on an $N\times N$ grid is therefore $O(N^2 log(N))$.
@@ -92,17 +93,19 @@ double bilinear(const std::vector<double>& x,
         size_t i,
         size_t j) 
 {
-    double dx = x[i+1] - x[i];
-    double dy = y[j+1] - y[j];
+    double xi = x[i], yj = y[j];
+    double dx = x[i+1] - xi;
+    double dy = y[j+1] - yj;
 
     double a = F[i,j];
     double b = (F[i+1,j] - a)/dx;
     double c = (F[i,j+1] - a)/dy;
     double d = (F[i+1,j+1] - a - b*dx - c*dy) / (dx*dy);
 
-    return a + b*(px-x[i]) + c*(py-y[j]) + d*(px-x[i])*(py-y[j]);
+    return a + b*(px-xi) + c*(py-yj) + d*(px-xi)*(py-yj);
 }
 ```
+One could of course compute and store the coefficients for the whole grid initially, but the performance gains are likely near zero, since interpolation will still require four lookups in vectors just like the above implementation. This would however, come at the cost of storing four addiditional matrices of coefficients.
 
 #### Plots
 To test the implementation we interpolate the following functions
@@ -118,6 +121,21 @@ F(x,y) = \exp\left(-\sqrt{x^2 + y^2}/4\right) \cos\left(\sqrt{x^2 + y^2}\right)
 which can be seen in [saddle_plot.svg](./saddle_plot.svg), [gauss_plot.svg](./gauss_plot.svg), and [wave_plot.svg](./wave_plot.svg) respectively. Notice that the interpolation is exact for the first of these. It does reasonably well approximating the gaussian as well but struggles with the oscillations of the third function. Notice also that the sample grid in the second case is not regular, to show that the algorithm works on any rectilinear grid.
 
 ### b
+This algorithm is similarly implemented in [bilinear.hpp](./bilinear.hpp) and [bilinear.cpp](./bilinear.cpp) in the function 
+```c++
+double integrate_bilinear(const std::vector<double>& x, 
+			const std::vector<double>& y,
+			const Matrix<double>& F,
+			double ax, double bx,
+			double ay, double by);
+```
+
+### c
+Integration of a single grid square can easily be done:
+```math
+\int_{a_y}^{b_y} \int_{a_x}^{b_x} B_{ij}(x,y) dx dy = a_{ij} (b_x-a_x)(b_y-a_y) ? \frac{1}{2} b_{ij}((b_x-x_i)^2-(a_x-x_i)^2)(b_y-a_y) + \frac{1}{2} c_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)(b_x-a_x) + \frac{1}{4} d_{ij} ((b_y-y_j)^2-(a_y-y_j)^2)((b_x-x_i)^2-(a_x-x_j)^2)
+```
+
 This algorithm is also implemented in [bilinear.hpp](./bilinear.hpp) and [bilinear.cpp](./bilinear.cpp) with the signature 
 ```c++
 double bilinear(const std::vector<double>& x,
