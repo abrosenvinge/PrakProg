@@ -196,3 +196,5 @@ The timing of the two methods can be seen in [timing_plot.svg](./timing_plot.svg
 
 #### Test
 Finally, we test that the two methods produce the same results which can be seen in [Out.txt](./Out.txt). They do.
+
+Optional self-evaluation: 10.
